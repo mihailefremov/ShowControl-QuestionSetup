@@ -1,0 +1,96 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="QuestionEditAndPreset" GeneratedClassName="DatabasesSettings">
+  <Profiles />
+  <Settings>
+    <Setting Name="QuestionDB_defaultHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">P@ssw0rd</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultDatabase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">wwtbam</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultTable1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gamequestions</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_defaultHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_defaultUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_defaultPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">P@ssw0rd</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_defaultDatabase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">wwtbam</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_defaultTable1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionsforcontestant</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultTable2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questioncategories</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultTable3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionsubcategories</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setDatabase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">wwtbam</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">P@ssw0rd</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setTable1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gamequestions</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setTable2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questioncategories</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setTable3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionsubcategories</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_setHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_setPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">P@ssw0rd</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_setTable1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionsforcontestant</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_setUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="ShowtimeDB_setDatabase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">wwtbam</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setTable4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionstacks</Value>
+    </Setting>
+    <Setting Name="QuestionDB_setTable5" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionstackitems</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultTable4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionstacks</Value>
+    </Setting>
+    <Setting Name="QuestionDB_defaultTable5" Type="System.String" Scope="User">
+      <Value Profile="(Default)">questionstackitems</Value>
+    </Setting>
+    <Setting Name="questionDBconnectionSQL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Server = 127.0.0.1;Uid=root;Password=P@ssw0rd;Database=wwtbam;Character Set=utf8;</Value>
+    </Setting>
+    <Setting Name="showtimeDBconnectionSQL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Server = 127.0.0.1;Uid=root;Password=P@ssw0rd;Database=wwtbam;Character Set=utf8;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

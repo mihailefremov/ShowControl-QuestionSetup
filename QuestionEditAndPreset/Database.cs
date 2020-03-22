@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace QuestionEditAndPreset
+{
+    class DatabaseManipulation
+    {
+        string connectionString = string.Empty;
+
+        DatabaseManipulation(string type)
+        {
+            
+        }
+
+
+
+    }
+}

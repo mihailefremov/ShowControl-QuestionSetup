@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DataUpdaterGameQuestions.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DBConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Server = 127.0.0.1;Uid=root;Password=P@ssw0rd;Database=test;Character Set=utf8;</Value>
+    </Setting>
+    <Setting Name="QueryForQSelection" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SELECT * FROM  `gamequestions_newlev` qs where qs.Difficulty=4 LIMIT 1</Value>
+    </Setting>
+    <Setting Name="QueryQuestionCount" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SELECT COUNT(QuestionID) AS CC FROM `gamequestions_newlev` WHERE Difficulty = 4</Value>
+    </Setting>
+    <Setting Name="gameqTable" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gamequestions_newlev</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,51 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="QuestionEditAndPreset" GeneratedClassName="AdvancedGameConfigSettings">
+  <Profiles />
+  <Settings>
+    <Setting Name="GamePlay1_Name" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MainGame</Value>
+    </Setting>
+    <Setting Name="GamePlay1_QAChoices" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="GamePlay1_TotalStackQ" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="QualificationGame1_Name" Type="System.String" Scope="User">
+      <Value Profile="(Default)">FastestFingerFirst</Value>
+    </Setting>
+    <Setting Name="QualificationGame1_QAChoices" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="QualificationGame1_TotalStackQ" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="QualificationGame1_RightOrderYN" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="StackBuild_RepeatCategoriesYN" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="StackBuild_UnusedUsedBothQ" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="StackBuild_UseOnlyCatIDs" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="StackBuild_ExcludeCatIDs" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MapLevelDifficult_DefaultMaping" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SetMoneyTree_DefaultTree" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UsageSelectionQuery" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="TopBottomSelectionQuery" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>
