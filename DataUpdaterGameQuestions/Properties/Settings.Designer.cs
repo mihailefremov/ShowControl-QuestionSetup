@@ -22,53 +22,5 @@ namespace DataUpdaterGameQuestions.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server = 127.0.0.1;Uid=root;Password=P@ssw0rd;Database=test;Character Set=utf8;")]
-        public string DBConnectionString {
-            get {
-                return ((string)(this["DBConnectionString"]));
-            }
-            set {
-                this["DBConnectionString"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("SELECT * FROM  `gamequestions_newlev` qs where qs.Difficulty=4 LIMIT 1")]
-        public string QueryForQSelection {
-            get {
-                return ((string)(this["QueryForQSelection"]));
-            }
-            set {
-                this["QueryForQSelection"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("SELECT COUNT(QuestionID) AS CC FROM `gamequestions_newlev` WHERE Difficulty = 4")]
-        public string QueryQuestionCount {
-            get {
-                return ((string)(this["QueryQuestionCount"]));
-            }
-            set {
-                this["QueryQuestionCount"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("gamequestions_newlev")]
-        public string gameqTable {
-            get {
-                return ((string)(this["gameqTable"]));
-            }
-            set {
-                this["gameqTable"] = value;
-            }
-        }
     }
 }
