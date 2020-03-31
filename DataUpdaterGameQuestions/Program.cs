@@ -13,33 +13,29 @@ namespace DataUpdaterGameQuestions
     {
         public static MySqlConnection MySqlConnection = new MySqlConnection();
         public static MySqlCommand cmd = new MySqlCommand();
-
-        public int Priviligies = 0;
-        public String Level = "0";
-        public String Type = "0";
-        public String Difficulty = "0";
-        public static String QuestionID = "-1";
-        public String CategoryID = "0";
-        public String SubcategoryID = "0";
-        public String Stack = "-1";
-        public String CorrectAnswer = "0";
-        public String Used = "0";
-
+        
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
+            
             string[] rowsofquestion = { "" };
-
-            rowsofquestion = File.ReadAllLines(string.Format("{0}/{1}", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "dopolna.txt"));
+            try
+            {
+                rowsofquestion = File.ReadAllLines(string.Format("{0}/{1}", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Properties.Settings.Default.FileNameWithExtensionForQuestionImport));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + " " + e.InnerException);
+                Console.ReadKey();
+                return;
+            }
 
             //SELECT REPLACE(gamequestions2.Question,'\r\n','|') from gamequestions2 where Question REGEXP "\r\n";
             //SELECT REPLACE(gamequestions2.Question,'\r','|') from gamequestions2 where Question REGEXP "\r";
             //SELECT REPLACE(gamequestions2.Question,'\n','|') from gamequestions2 where Question REGEXP "\n";
 
             int successes = 0;
-
-            //List<string> errors = new List<string>();
-
+           
             string errors = "";
 
             try
@@ -47,12 +43,21 @@ namespace DataUpdaterGameQuestions
                 MySqlConnection.ConnectionString = DatabasesSettings.Default.showtimeDBconnectionSQL;
                 MySqlConnection.Open();
             }
-            catch (System.Data.SqlClient.SqlException e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message + " " + e.InnerException);
                 Console.ReadKey();
                 return;
             }
+            
+            Console.WriteLine($"Importing questions located on desktop file ({Properties.Settings.Default.FileNameWithExtensionForQuestionImport})\r\nto server/datasource: {MySqlConnection.DataSource} database: {MySqlConnection.Database} ?");
+            
+            writeallq(rowsofquestion);
+
+            Console.WriteLine("------------Press any key to continue...------------");
+            Console.ReadKey();
+
+            Console.Clear();
 
             try
             {
@@ -148,6 +153,35 @@ namespace DataUpdaterGameQuestions
                     MySqlConnection.Close();
                     MySqlConnection.Dispose();
                 }
+
+                try
+                {
+                    string path = string.Format("{0}/{1}", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Properties.Settings.Default.FileNameWithExtensionForQuestionImport);
+                    // This text is added only once to the file.
+                    if (!File.Exists(path))
+                    {
+                        // Create a file to write to.
+                        using (StreamWriter sw = File.CreateText(path))
+                        {
+                            sw.WriteLine("Hello");
+                            sw.WriteLine("And");
+                            sw.WriteLine("Welcome");
+                        }
+                    }
+
+                    // This text is always added, making the file longer over time
+                    // if it is not deleted.
+                    using (StreamWriter sw = File.AppendText(path))
+                    {
+                        sw.WriteLine("This");
+                        sw.WriteLine("is Extra");
+                        sw.WriteLine("Text");
+                    }
+                } catch (Exception e)
+                {
+
+                } //damage file intentionally to not be imported again
+
             }
 
             Console.ReadKey();
@@ -229,6 +263,16 @@ namespace DataUpdaterGameQuestions
             //}
         }
 
+        private static void writeallq(string[] readlines)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            foreach(string q in readlines)
+            {
+                Console.WriteLine(q.Replace("\t"," "));
+            }
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
         private static bool checkfornewline(string[] questionrownext)
         {
             foreach (string p in questionrownext)
@@ -243,6 +287,16 @@ namespace DataUpdaterGameQuestions
 
         #region "notneeded"
 
+        //public int Priviligies = 0;
+        //public String Level = "0";
+        //public String Type = "0";
+        //public String Difficulty = "0";
+        //public static String QuestionID = "-1";
+        //public String CategoryID = "0";
+        //public String SubcategoryID = "0";
+        //public String Stack = "-1";
+        //public String CorrectAnswer = "0";
+        //public String Used = "0";
         ////while (true)
         ////{
         ////    setq();

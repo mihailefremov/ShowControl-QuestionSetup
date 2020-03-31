@@ -22,5 +22,17 @@ namespace DataUpdaterGameQuestions.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("dopolna.txt")]
+        public string FileNameWithExtensionForQuestionImport {
+            get {
+                return ((string)(this["FileNameWithExtensionForQuestionImport"]));
+            }
+            set {
+                this["FileNameWithExtensionForQuestionImport"] = value;
+            }
+        }
     }
 }
