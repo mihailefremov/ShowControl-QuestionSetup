@@ -339,7 +339,7 @@ namespace QuestionEditAndPreset
 
         private void QuestionAnswerEdit_TextChanged(object sender, EventArgs e)
         {
-            QuestionText_button.Text = QuestionText_textbox.Text;
+            QuestionText_button.Text = QuestionText_textbox.Text.Replace("|", "\r\n");
             Answer1_button.Text = Answer1_textbox.Text;
             Answer2_button.Text = Answer2_textbox.Text;
             Answer3_button.Text = Answer3_textbox.Text;
