@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ShowControlWeb_QuestionManagement.Questionstacks>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Stack)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Timestamp)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Index" asp-controller="QuestionsPreviewFromStack"
+                    asp-route-id="@item.StackId">@Html.DisplayFor(modelItem => item.Stack)</a>
+            </td>
+            <td>
+                @((QuestionTypeDescription)item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.StackId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.StackId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.StackId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

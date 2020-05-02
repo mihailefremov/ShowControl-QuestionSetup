@@ -1,0 +1,156 @@
+﻿@model IEnumerable<ShowControlWeb_QuestionManagement.Gamequestions>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.QuestionId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Difficulty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Question)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Answer1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Answer2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Answer3)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Answer4)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CorrectAnswer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubcategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdditionalCategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdditionalSubcategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MoreInformation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pronunciation)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.QuestionCreator)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfCreation)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Comments)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimesAnswered)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastDateAnswered)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuestionId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Difficulty)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Question)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Answer1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Answer2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Answer3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Answer4)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CorrectAnswer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubcategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdditionalCategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdditionalSubcategoryId)
+            </td>
+            <td>
+                @if (item.MoreInformation!=null && item.MoreInformation.Length > 88)
+                {
+                    <text>@item.MoreInformation.Substring(0, 87)</text><text>...</text>
+                }
+                else
+                {
+                    <text>@item.MoreInformation</text>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pronunciation)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.QuestionCreator)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfCreation)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Comments)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimesAnswered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastDateAnswered)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.QuestionId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.QuestionId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.QuestionId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

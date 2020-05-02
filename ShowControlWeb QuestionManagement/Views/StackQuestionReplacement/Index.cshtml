@@ -1,0 +1,73 @@
+﻿@model ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels.StackQuestionReplacementViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    //int StackId = ViewBag.StackId;
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="BuildStack" asp-route-id="0">Refresh</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().Difficulty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().QuestionId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().Question)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().TimesAnswered)
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.replacementQuestions)
+        {
+            string rowColor = "";
+            @if (item.TimesAnswered != 0)
+            {
+                rowColor = "#ffe375";
+            }
+            else if (item.QuestionId <= 0)
+            {
+                rowColor = "#ff8a8a";
+            }
+            <tr style="background-color:@rowColor">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Difficulty)
+                </td>
+                <td>
+                    @*GameQuestions/Details/3*@
+                    <a asp-action="Details" asp-controller="GameQuestions"
+                       asp-route-id="@item.QuestionId">@item.QuestionId</a>
+                    @*@Html.DisplayFor(modelItem => item.QuestionId)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Question)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimesAnswered)
+                </td>
+                <td>
+                    <a asp-action="Replace" asp-controller="StackQuestionReplacement"
+                        asp-route-StackId="@ViewBag.StackId"
+                        asp-route-ReplaceQuestionId="@item.QuestionId"
+                        asp-route-Level="@ViewBag.Level">
+                        Replace
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

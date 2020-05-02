@@ -1,0 +1,106 @@
+﻿@model ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels.StackQuestionPreviewViewModel
+
+@{
+    string indexTitle = "";
+    if (Model.stack != null && (!string.IsNullOrWhiteSpace(Model.stack.Stack)))
+    {
+        indexTitle = ((QuestionTypeDescription)Model.stack.Type) + " " + Model.stack.Stack;
+    }
+}
+
+<h1>@indexTitle</h1>
+
+<p>
+    <a asp-action="BuildStack" asp-route-id="@Model.stack.StackId">Build Stack</a> |
+    <a asp-action="RemoveAll" asp-route-id="@Model.stack.StackId">Remove All</a>
+</p>
+
+@{
+    string successAlertDisplay = "none";
+    string errorAlertDisplay = "none";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    successAlertDisplay = "";
+    string successAlertText = TempData["SuccessMessage"].ToString();
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: @successAlertDisplay">
+        <text>@successAlertText</text>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    TempData["SuccessMessage"] = null;
+}
+else if (TempData["ErrorMessage"] != null)
+{
+    errorAlertDisplay = "";
+    string errorAlertText = TempData["ErrorMessage"].ToString();
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: @errorAlertDisplay">
+        <text>@errorAlertText</text>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    TempData["ErrorMessage"] = null;
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().QuestionLevel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().QuestionId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().Question)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().TimesAnswered)
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.questionsPreviewFromStack)
+        {
+            string rowColor = "";
+            @if (item.TimesAnswered != 0)
+            {
+                rowColor = "#ffe375";
+            }
+            else if (item.QuestionId <= 0)
+            {
+                rowColor = "#ff8a8a";
+            }
+            <tr style="background-color:@rowColor">
+                <td>
+                    <a asp-action="Index" asp-controller="StackQuestionReplacement"
+                       asp-route-StackId="@Model.stack.StackId" asp-route-Level="@item.QuestionLevel">
+                        @item.QuestionLevel
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-controller="GameQuestions"
+                       asp-route-id="@item.QuestionId">
+                        @item.QuestionId
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Question)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimesAnswered)
+                </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
+        <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |
+        <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

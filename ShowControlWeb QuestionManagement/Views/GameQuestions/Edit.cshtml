@@ -1,0 +1,121 @@
+﻿@model ShowControlWeb_QuestionManagement.Gamequestions
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Gamequestions</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="QuestionId" />
+            <div class="form-group">
+                <label asp-for="Difficulty" class="control-label"></label>
+                <input asp-for="Difficulty" class="form-control" />
+                <span asp-validation-for="Difficulty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Question" class="control-label"></label>
+                <input asp-for="Question" class="form-control" />
+                <span asp-validation-for="Question" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Answer1" class="control-label"></label>
+                <input asp-for="Answer1" class="form-control" />
+                <span asp-validation-for="Answer1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Answer2" class="control-label"></label>
+                <input asp-for="Answer2" class="form-control" />
+                <span asp-validation-for="Answer2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Answer3" class="control-label"></label>
+                <input asp-for="Answer3" class="form-control" />
+                <span asp-validation-for="Answer3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Answer4" class="control-label"></label>
+                <input asp-for="Answer4" class="form-control" />
+                <span asp-validation-for="Answer4" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CorrectAnswer" class="control-label"></label>
+                <input asp-for="CorrectAnswer" class="form-control" />
+                <span asp-validation-for="CorrectAnswer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <input asp-for="CategoryId" class="form-control" />
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubcategoryId" class="control-label"></label>
+                <input asp-for="SubcategoryId" class="form-control" />
+                <span asp-validation-for="SubcategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdditionalCategoryId" class="control-label"></label>
+                <input asp-for="AdditionalCategoryId" class="form-control" />
+                <span asp-validation-for="AdditionalCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdditionalSubcategoryId" class="control-label"></label>
+                <input asp-for="AdditionalSubcategoryId" class="form-control" />
+                <span asp-validation-for="AdditionalSubcategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MoreInformation" class="control-label"></label>
+                <input asp-for="MoreInformation" class="form-control" />
+                <span asp-validation-for="MoreInformation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pronunciation" class="control-label"></label>
+                <input asp-for="Pronunciation" class="form-control" />
+                <span asp-validation-for="Pronunciation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionCreator" class="control-label"></label>
+                <input asp-for="QuestionCreator" class="form-control" />
+                <span asp-validation-for="QuestionCreator" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfCreation" class="control-label"></label>
+                <input asp-for="DateOfCreation" class="form-control" />
+                <span asp-validation-for="DateOfCreation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comments" class="control-label"></label>
+                <input asp-for="Comments" class="form-control" />
+                <span asp-validation-for="Comments" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TimesAnswered" class="control-label"></label>
+                <input asp-for="TimesAnswered" class="form-control" />
+                <span asp-validation-for="TimesAnswered" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastDateAnswered" class="control-label"></label>
+                <input asp-for="LastDateAnswered" class="form-control" />
+                <span asp-validation-for="LastDateAnswered" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
