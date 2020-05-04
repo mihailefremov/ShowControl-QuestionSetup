@@ -26,10 +26,21 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+        bool IsLive = (item.StackId == ViewBag.LiveStandardStackID) || (item.StackId == ViewBag.LiveQualificationStackID);
+        bool IsReplacement = (item.StackId == ViewBag.ReplacementStandardStackID) || (item.StackId == ViewBag.ReplacementQualificationStackID);
         <tr>
             <td>
                 <a asp-action="Index" asp-controller="QuestionsPreviewFromStack"
-                    asp-route-id="@item.StackId">@Html.DisplayFor(modelItem => item.Stack)</a>
+                   asp-route-id="@item.StackId">@Html.DisplayFor(modelItem => item.Stack)</a>
+                @if (IsLive)
+                {
+                    <span class="badge badge-danger">Live</span>
+                }
+                else if (IsReplacement)
+                {
+                    <span class="badge badge-danger">Live</span>
+                    <span class="badge badge-pill badge-info">Replacement</span>
+                }
             </td>
             <td>
                 @((QuestionTypeDescription)item.Type)
@@ -39,7 +50,6 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.StackId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StackId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.StackId">Delete</a>
             </td>
         </tr>

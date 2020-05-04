@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
 using ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels;
 
@@ -13,13 +14,16 @@ namespace ShowControlWeb_QuestionManagement
         //Scaffold-DbContext 'Data Source=IDEA-PC\SQLEXPRESS02;Initial Catalog=wwtbam;Integrated Security=True' Microsoft.EntityFrameworkCore.SqlServer   
         public wwtbamContext()
         {
+            this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public wwtbamContext(DbContextOptions<wwtbamContext> options)
             : base(options)
         {
+
         }
 
+        
         public virtual DbSet<Audiencevotes> Audiencevotes { get; set; }
         public virtual DbSet<Contestantbank> Contestantbank { get; set; }
         public virtual DbSet<Contestantonshow> Contestantonshow { get; set; }
@@ -29,7 +33,7 @@ namespace ShowControlWeb_QuestionManagement
         public virtual DbSet<Moneytreevalues> Moneytreevalues { get; set; }
         public virtual DbSet<Qleveldifficultymaping> Qleveldifficultymaping { get; set; }
         public virtual DbSet<Questioncategories> Questioncategories { get; set; }
-        public virtual DbSet<Questionsforcontestant> Questionsforcontestant { get; set; }
+        public virtual DbSet<Livestacks> Livestacks { get; set; }
         public virtual DbSet<Questionstackitems> Questionstackitems { get; set; }
         public virtual DbSet<Questionstacks> Questionstacks { get; set; }
         public virtual DbSet<Questionsubcategories> Questionsubcategories { get; set; }
@@ -51,7 +55,12 @@ namespace ShowControlWeb_QuestionManagement
             List<Gamequestions> qid = this.Gamequestions.FromSqlRaw(query).ToList();
             return qid;
         }
-
+        public virtual void SwapStackQuestionLevel(int StackId, int CurrentStackLevel, int NextStackLevel)
+        {
+            var query = $"EXEC [dbo].[proc_SwapStackQuestionLevel] " +
+                $"@StackID = {StackId}, @CurrentStackLevel = {CurrentStackLevel}, @NextStackLevel = {NextStackLevel}";
+            this.Database.ExecuteSqlRaw(query);
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -166,7 +175,9 @@ namespace ShowControlWeb_QuestionManagement
 
                 entity.ToTable("gamequestions");
 
-                entity.Property(e => e.QuestionId).HasColumnName("QuestionID");
+                entity.Property(e => e.QuestionId)
+                    .HasColumnName("QuestionID")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.AdditionalCategoryId)
                     .HasColumnName("AdditionalCategoryID")
@@ -227,6 +238,21 @@ namespace ShowControlWeb_QuestionManagement
                 entity.Property(e => e.TimesAnswered).HasDefaultValueSql("('0')");
 
                 entity.Property(e => e.Type).HasDefaultValueSql("('1')");
+            });
+
+            modelBuilder.Entity<Livestacks>(entity =>
+            {
+                entity.HasKey(e => new { e.StackType, e.IsReplacement });
+
+                entity.ToTable("livestacks");
+
+                entity.HasIndex(e => e.StackId)
+                    .HasName("UK_livestacks")
+                    .IsUnique();
+
+                entity.Property(e => e.StackId).HasColumnName("StackID");
+
+                entity.Property(e => e.TimeStamp).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Mapingtypes>(entity =>
@@ -322,57 +348,9 @@ namespace ShowControlWeb_QuestionManagement
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Questionsforcontestant>(entity =>
-            {
-                entity.HasKey(e => new { e.Level, e.Type })
-                    .HasName("PK__question__1563132BBD101966");
-
-                entity.ToTable("questionsforcontestant");
-
-                entity.Property(e => e.Level).HasDefaultValueSql("('0')");
-
-                entity.Property(e => e.Type).HasDefaultValueSql("('0')");
-
-                entity.Property(e => e.Answer1)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Answer2)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Answer3)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Answer4)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Answered).HasDefaultValueSql("('0')");
-
-                entity.Property(e => e.Comments).IsUnicode(false);
-
-                entity.Property(e => e.CorrectAnswer)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MoreInformation).IsUnicode(false);
-
-                entity.Property(e => e.Pronunciation).IsUnicode(false);
-
-                entity.Property(e => e.Question)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.QuestionCreator).IsUnicode(false);
-
-                entity.Property(e => e.QuestionId).HasColumnName("QuestionID");
-            });
-
             modelBuilder.Entity<Questionstackitems>(entity =>
             {
-                entity.HasKey(e => new { e.StackId, e.StackLevel })
+                entity.HasKey(e => new { e.StackId, e.StackLevel }) //
                     .HasName("PK__question__33D98D41F58782AA");
 
                 entity.ToTable("questionstackitems");

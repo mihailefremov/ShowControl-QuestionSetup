@@ -8,11 +8,44 @@
     }
 }
 
-<h1>@indexTitle</h1>
+<h1>
+    @{
+        <text>@indexTitle</text>
+        if (Model.IsStackLive)
+        {
+            <span class="badge badge-pill badge-danger">Live</span>
+        }
+    }
+</h1>
+<h5>
+    @if (Model.IsStackReplacement)
+    {
+        <span class="badge badge-pill badge-info">Replacement</span>
+    }
+</h5>
 
 <p>
     <a asp-action="BuildStack" asp-route-id="@Model.stack.StackId">Build Stack</a> |
-    <a asp-action="RemoveAll" asp-route-id="@Model.stack.StackId">Remove All</a>
+    @{
+        if (Model.IsStackLive == false)
+        {
+            <a asp-action="SetStackLive" asp-route-id="@Model.stack.StackId">Set Live</a> <text>|</text>
+        }
+        else
+        {
+            <a asp-action="RemoveStackLive" asp-route-id="@Model.stack.StackId">Remove from Live</a> <text>|</text>
+        }
+
+        if (Model.IsStackReplacement == false)
+        {
+            <a asp-action="SetReplacementStack" asp-route-id="@Model.stack.StackId">Set as Replacement</a> <text>|</text>
+        }
+        else
+        {
+            <a asp-action="RemoveReplacementStack" asp-route-id="@Model.stack.StackId">Remove Replacement</a> <text>|</text>
+        }
+    }
+    <a asp-action="RemoveAll" asp-route-id="@Model.stack.StackId">Remove All Questions</a>
 </p>
 
 @{
@@ -43,64 +76,87 @@ else if (TempData["ErrorMessage"] != null)
     </div>
     TempData["ErrorMessage"] = null;
 }
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <text>Level</text>
+                </th>
+                <th>
+                    <text>ID</text>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().Question)
+                </th>
+                <th>
+                    <text>Used</text>
+                </th>
+                <th>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().QuestionLevel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().QuestionId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().Question)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().TimesAnswered)
-            </th>
-            <th>
+                </th>
+                <th>
 
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.questionsPreviewFromStack)
-        {
-            string rowColor = "";
-            @if (item.TimesAnswered != 0)
-            {
-                rowColor = "#ffe375";
-            }
-            else if (item.QuestionId <= 0)
-            {
-                rowColor = "#ff8a8a";
-            }
-            <tr style="background-color:@rowColor">
-                <td>
-                    <a asp-action="Index" asp-controller="StackQuestionReplacement"
-                       asp-route-StackId="@Model.stack.StackId" asp-route-Level="@item.QuestionLevel">
-                        @item.QuestionLevel
-                    </a>
-                </td>
-                <td>
-                    <a asp-action="Details" asp-controller="GameQuestions"
-                       asp-route-id="@item.QuestionId">
-                        @item.QuestionId
-                    </a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Question)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TimesAnswered)
-                </td>
-                <td>
-                    @*<a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
-        <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |
-        <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>*@
-                </td>
+                </th>
+                <th>
+
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.questionsPreviewFromStack)
+            {
+                string rowColor = "";
+                @if (item.TimesAnswered != 0)
+                {
+                    rowColor = "#ffe375";
+                }
+                else if (item.QuestionId <= 0)
+                {
+                    rowColor = "#ff8a8a";
+                }
+                <tr style="background-color:@rowColor">
+                    <td>
+                        <a asp-action="Index" asp-controller="StackQuestionReplacement"
+                           asp-route-StackId="@Model.stack.StackId" asp-route-Level="@item.QuestionLevel">
+                            @item.QuestionLevel
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-controller="GameQuestions"
+                           asp-route-id="@item.QuestionId">
+                            @item.QuestionId
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Question)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TimesAnswered)
+                    </td>
+                    <td>
+                        @*<a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |*@
+                        <a asp-action="RemoveQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
+                           asp-route-QuestionId="@item.QuestionId">✕</a>
+                    </td>
+                    <td>
+                        <strong>
+                            <a asp-action="MoveUpQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
+                               asp-route-QuestionId="@item.QuestionId">&nbsp;&nbsp;↑&nbsp;</a>
+                        </strong>
+                    </td>
+                    <td>
+                        <strong>
+                            <a asp-action="MoveDownQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
+                               asp-route-QuestionId="@item.QuestionId">&nbsp;↓&nbsp;</a>
+                        </strong>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+    <div>
+        <a asp-action="Index" asp-controller="Stacks">Back to List</a>
+    </div>

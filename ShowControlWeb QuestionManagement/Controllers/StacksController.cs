@@ -21,6 +21,43 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         // GET: Stacks
         public async Task<IActionResult> Index()
         {
+            //live badge
+            var standardNormalTypeLive = _context.Livestacks.Where(x =>
+                    x.StackType == (short)QuestionTypeDescription.Standard && x.IsReplacement == 0).FirstOrDefault();
+
+            var qualificationNormalTypeLive = _context.Livestacks.Where(x =>
+                    x.StackType == (short)QuestionTypeDescription.Qualification && x.IsReplacement == 0).FirstOrDefault();
+
+            ViewBag.LiveStandardStackID = -1;
+            ViewBag.LiveQualificationStackID = -1;
+            if (standardNormalTypeLive != null)
+            {
+                ViewBag.LiveStandardStackID = standardNormalTypeLive.StackId;
+            }
+            if (qualificationNormalTypeLive != null)
+            {
+                ViewBag.LiveQualificationStackID = qualificationNormalTypeLive.StackId;
+            }
+
+            //replacement badge
+            var standardReplacementTypeLive = _context.Livestacks.Where(x =>
+                    x.StackType == (short)QuestionTypeDescription.Standard && x.IsReplacement == 1).FirstOrDefault();
+
+            var qualificationReplacementTypeLive = _context.Livestacks.Where(x =>
+                    x.StackType == (short)QuestionTypeDescription.Qualification && x.IsReplacement == 1).FirstOrDefault();
+
+            ViewBag.ReplacementStandardStackID = -1;
+            ViewBag.ReplacementQualificationStackID = -1;
+            if (standardReplacementTypeLive != null)
+            {
+                ViewBag.ReplacementStandardStackID = standardReplacementTypeLive.StackId;
+            }
+            if (qualificationReplacementTypeLive != null)
+            {
+                ViewBag.ReplacementQualificationStackID = qualificationReplacementTypeLive.StackId;
+            }
+
+
             return View(await _context.Questionstacks.ToListAsync());
         }
 
@@ -140,7 +177,12 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         {
             var questionstacks = await _context.Questionstacks.FindAsync(id);
             _context.Questionstacks.Remove(questionstacks);
+
+            var livestacks = await _context.Livestacks.Where(x => x.StackId == id).FirstOrDefaultAsync();
+            if (livestacks != null) _context.Livestacks.Remove(livestacks);
+
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

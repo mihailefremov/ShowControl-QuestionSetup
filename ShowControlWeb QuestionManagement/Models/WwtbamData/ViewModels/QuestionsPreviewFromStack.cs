@@ -19,6 +19,29 @@ namespace ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels
     public class StackQuestionPreviewViewModel
     {
         public Questionstacks stack { get; set; }
-        public List<QuestionsPreviewFromStack> questionsPreviewFromStack { get; set; }
+
+        private IEnumerable<QuestionsPreviewFromStack> _questionsPreviewFromStack;
+        public IEnumerable<QuestionsPreviewFromStack> questionsPreviewFromStack
+        {
+            get
+            {
+                foreach (QuestionsPreviewFromStack p in _questionsPreviewFromStack)
+                {
+                    if (p.QuestionId <= 0) p.QuestionId = -1;
+                    if (!string.IsNullOrWhiteSpace(p.Question))
+                    {
+                        p.Question = p.Question.Replace("|", " ").Replace("  ", " ");
+                    }
+                }
+                return _questionsPreviewFromStack;
+            }
+            set
+            {
+                _questionsPreviewFromStack = value;
+            }
+        }
+
+        public bool IsStackLive { get; set; }
+        public bool IsStackReplacement { get; set; }
     }
 }

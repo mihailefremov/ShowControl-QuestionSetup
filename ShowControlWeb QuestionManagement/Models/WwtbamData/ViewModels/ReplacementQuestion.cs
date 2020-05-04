@@ -16,6 +16,27 @@ namespace ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels
     public class StackQuestionReplacementViewModel
     {
         public IEnumerable<Questioncategories> questionCategories { get; set; }
-        public IEnumerable<ReplacementQuestion> replacementQuestions { get; set; }
+
+        public IEnumerable<ReplacementQuestion> _replacementQuestions;
+        public IEnumerable<ReplacementQuestion> replacementQuestions
+        {
+            get
+            {
+                foreach (ReplacementQuestion p in _replacementQuestions)
+                {
+                    if (p.QuestionId <= 0) p.QuestionId = -1;
+                    if (!string.IsNullOrWhiteSpace(p.Question))
+                    {
+                        p.Question = p.Question.Replace("|", " ").Replace("  ", " ");
+                    }
+                }
+                return _replacementQuestions;
+            }
+            set
+            {
+                _replacementQuestions = value;
+            }
+        }
+    
     }
 }

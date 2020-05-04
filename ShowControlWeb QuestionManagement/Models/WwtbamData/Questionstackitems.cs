@@ -14,8 +14,4 @@ namespace ShowControlWeb_QuestionManagement
         public int? AdditionalSubcategoryId { get; set; }
     }
 
-    public enum NumberOfQuestionsPerStackType
-    {
-        Standard = 15, Qualification = 10
-    }
 }

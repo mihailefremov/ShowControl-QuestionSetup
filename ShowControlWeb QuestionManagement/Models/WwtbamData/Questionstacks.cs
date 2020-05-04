@@ -10,6 +10,39 @@ namespace ShowControlWeb_QuestionManagement
         public int Type { get; set; }
         public DateTime Timestamp { get; set; }
 
+        public QuestionTypeDescription StackType
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case (int)QuestionTypeDescription.Standard:
+                        return QuestionTypeDescription.Standard;
+
+                    case (int)QuestionTypeDescription.Qualification:
+                        return QuestionTypeDescription.Qualification;
+
+                    default:
+                        return QuestionTypeDescription.Undefined;
+                }
+            }
+        }
+        public short MaximumQuestionNumberPerStack
+        {
+            get
+            {
+                switch (StackType)
+                {
+                    case QuestionTypeDescription.Standard:
+                        return 15;
+                    case QuestionTypeDescription.Qualification:
+                        return 10;
+                    default:
+                        return -1;
+                }
+            }
+        }
+
     }
 
 }

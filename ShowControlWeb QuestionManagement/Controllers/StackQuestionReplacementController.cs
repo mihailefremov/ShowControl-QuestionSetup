@@ -40,9 +40,9 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             int difficulty = _context.Qleveldifficultymaping.Where(x => x.Level == Level && x.Maping == "2").FirstOrDefault().Difficulty;
 
             List<Gamequestions> replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficulty, 0);
-            if (replacementQuestions == null)
+            if (replacementQuestions.Count == 0)
             {
-                replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficulty, 1);
+                replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficulty, 1, 4);
             }
 
             foreach (Gamequestions q in replacementQuestions)

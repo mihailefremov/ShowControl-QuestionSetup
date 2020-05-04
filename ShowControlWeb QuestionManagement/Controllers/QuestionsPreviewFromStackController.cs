@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels;
 
 namespace ShowControlWeb_QuestionManagement.Controllers
@@ -36,9 +37,18 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                              { Stack = sq.Stack, StackId = sq.StackId,
                                Type = sq.Type, Timestamp = sq.Timestamp };
 
+            //note: select mesto where so firstordefault kje go najde prviot i kje ja proveri lambdata! ne e isto so where pa first or default
+            var liveStackQuery = _context.Livestacks.Any(x => x.StackId == id);
+            var replacementStackQuery = _context.Livestacks.Any(x => x.StackId == id && x.IsReplacement==1);
+
             StackQuestionPreviewViewModel viewModel = new StackQuestionPreviewViewModel();
             viewModel.questionsPreviewFromStack = query.OrderByDescending(x=> x.QuestionLevel).ToList();
-            viewModel.stack = stackQuery.FirstOrDefault();
+            viewModel.stack = stackQuery.FirstOrDefault();           
+            
+            viewModel.IsStackLive = false;
+            viewModel.IsStackReplacement = false;
+            if (liveStackQuery) viewModel.IsStackLive = true;
+            if (replacementStackQuery) viewModel.IsStackReplacement = true;
 
             return View(viewModel);
         }
@@ -66,37 +76,28 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
                 if (stackQuery.Count() == 0) return NotFound();
 
-                Questionstacks questionstacks = stackQuery.FirstOrDefault();
+                Questionstacks questionstack = stackQuery.FirstOrDefault();
 
-                int totalQuestions = 0;
-                switch (questionstacks.Type)
-                {
-                    case (int)QuestionTypeDescription.Standard:
-                        totalQuestions = (int)NumberOfQuestionsPerStackType.Standard;
-                        break;
-                    case (int)QuestionTypeDescription.Qualification:
-                        totalQuestions = (int)NumberOfQuestionsPerStackType.Qualification;
-                        break;
-                    default:
-                        break;
-                }
+                short totalQuestions = 0;
+                totalQuestions = questionstack.MaximumQuestionNumberPerStack;
 
                 _context.Questionstackitems.RemoveRange(_context.Questionstackitems.Where(x => x.StackId == id));
 
                 for (int i = 1; i <= totalQuestions; i++)
                 {
                     int difficulty = _context.Qleveldifficultymaping.Where(x => x.Level == i && x.Maping == "2").FirstOrDefault().Difficulty;
-
+                    if (questionstack.StackType == QuestionTypeDescription.Qualification) difficulty = ((i+1) % 2) + 1; //alternate 1-2-1-2
+                    
                     long RndQuestionId = -1;
                     int RndCategoryId = -1;
                     int RndSubcategoryId = -1;
                     int RndAdditionalCategoryId = -1;
                     int RndAdditionalSubcategoryId = -1;
 
-                    Gamequestions randomquestion = _context.GetRandomlySelectedQuestion(id, questionstacks.Type, difficulty, 0);
+                    Gamequestions randomquestion = _context.GetRandomlySelectedQuestion(id, questionstack.Type, difficulty, 0);
                     if (randomquestion == null)
                     {
-                        randomquestion = _context.GetRandomlySelectedQuestion(id, questionstacks.Type, difficulty, 1);
+                        randomquestion = _context.GetRandomlySelectedQuestion(id, questionstack.Type, difficulty, 1);
                     }
 
                     if (randomquestion != null)
@@ -138,7 +139,6 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             {
                 _context.Questionstackitems.RemoveRange(_context.Questionstackitems.Where(x => x.StackId == id));
                 _context.SaveChanges();
-                TempData["SuccessMessage"] = "Questions from stack are removed";
             }
             catch (Exception e)
             {
@@ -148,7 +148,147 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             return RedirectToAction(nameof(Index), new { id });
         }
 
-     
+        public ActionResult SetStackLive(int id)
+        {
+            try
+            {
+                var stackQuery = from sq in _context.Questionstacks
+                                 where sq.StackId == id
+                                 select new Questionstacks
+                                 {
+                                     Stack = sq.Stack,
+                                     StackId = sq.StackId,
+                                     Type = sq.Type,
+                                     Timestamp = sq.Timestamp
+                                 };
+
+                if (stackQuery == null)
+                {
+                    return NotFound();
+                }
+
+                //todo vidi sto da napravis so replacement stakovite
+                int CurrentStackType = stackQuery.FirstOrDefault().Type;
+               
+                //mozebi vaka e super, koga go stavas live gi trgas site drugi pretodno sto bile live od istiot tip
+                _context.Livestacks.RemoveRange(_context.Livestacks.Where(x => x.StackType == CurrentStackType)); // && x.IsReplacement==0
+                _context.Livestacks.Add(new Livestacks { StackId = id, StackType =(short)CurrentStackType, TimeStamp=DateTime.Now});
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = $"Stack {stackQuery.FirstOrDefault().Stack} is now LIVE!";
+
+            } catch(Exception e)
+            {
+                TempData["ErrorMessage"] = e.Message.ToString();
+            }
+
+            return RedirectToAction(nameof(Index), new { id });
+        }
+
+        public ActionResult RemoveStackLive(int id)
+        {
+            var livestacks = _context.Livestacks.Where(x => x.StackId == id).FirstOrDefault();
+            if (livestacks != null) _context.Livestacks.Remove(livestacks);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index), new { id });
+        }
+
+        public ActionResult SetReplacementStack(int id)
+        {
+            var livestacks = _context.Livestacks.Where(x => x.StackId == id).FirstOrDefault();
+            if (livestacks != null)
+            {
+                _context.Livestacks.Remove(livestacks);
+                _context.SaveChanges();
+
+                livestacks.IsReplacement = 1;
+                _context.Livestacks.Add(livestacks);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Index), new { id });
+        }
+
+        public ActionResult RemoveReplacementStack(int id)
+        {
+            var livestacks = _context.Livestacks.Where(x => x.StackId == id).FirstOrDefault();
+            if (livestacks != null)
+            {
+                _context.Livestacks.Remove(livestacks);
+                _context.SaveChanges();
+
+                livestacks.IsReplacement = 0;
+                _context.Livestacks.Add(livestacks);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Index), new { id });
+        }
+
+        public ActionResult MoveUpQuestionFromStack(int StackId, int QuestionId)
+        {
+            var stackcurrentquestion = _context.Questionstackitems.FirstOrDefault(x => x.StackId == StackId && x.QuestionId == QuestionId);
+            if (stackcurrentquestion == null)
+            {
+                return NotFound();
+            }
+
+            int currentQuestionLevel = stackcurrentquestion.StackLevel;
+            int nextQuestionLevel = stackcurrentquestion.StackLevel+1;
+
+            var stackType = _context.Questionstacks.Find(StackId);
+            short maxLevel = (short)stackType.MaximumQuestionNumberPerStack;
+          
+            if (currentQuestionLevel == maxLevel)
+            {
+                //ne moze da odi nagore ako e na najvisoko nivo
+                return RedirectToAction(nameof(Index), new { id = StackId });
+            }
+
+            var stacknextquestionquery = _context.Questionstackitems.FirstOrDefault(x => x.StackId == StackId && x.StackLevel == nextQuestionLevel);
+            if (stacknextquestionquery == null)
+            {
+                return NotFound();
+            }
+
+            _context.SwapStackQuestionLevel(StackId, currentQuestionLevel, nextQuestionLevel);
+
+            return RedirectToAction(nameof(Index), new { id = StackId });
+        }
+
+        public ActionResult MoveDownQuestionFromStack(int StackId, int QuestionId)
+        {
+            var stackcurrentquestion = _context.Questionstackitems.FirstOrDefault(x => x.StackId == StackId && x.QuestionId == QuestionId);
+            if (stackcurrentquestion == null)
+            {
+                return NotFound();
+            }
+
+            int currentQuestionLevel = stackcurrentquestion.StackLevel;
+            int nextQuestionLevel = stackcurrentquestion.StackLevel - 1;
+
+            var stackType = _context.Questionstacks.Find(StackId);
+            short minLevel = 1;
+
+            if (currentQuestionLevel == minLevel)
+            {
+                //ne moze da odi nagore ako e na najvisoko nivo
+                return RedirectToAction(nameof(Index), new { id = StackId });
+            }
+
+            var stacknextquestionquery = _context.Questionstackitems.FirstOrDefault(x => x.StackId == StackId && x.StackLevel == nextQuestionLevel);
+            if (stacknextquestionquery == null)
+            {
+                return NotFound();
+            }
+
+            _context.SwapStackQuestionLevel(StackId, currentQuestionLevel, nextQuestionLevel);
+
+            return RedirectToAction(nameof(Index), new { id = StackId });
+        }
+
+
         // GET: QuestionsPreviewFromStack/Edit/5
         public ActionResult Edit(int id)
         {
@@ -173,9 +313,22 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         }
 
         // GET: QuestionsPreviewFromStack/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult RemoveQuestionFromStack(int StackId, int QuestionId)
         {
-            return View();
+            var stackitem = _context.Questionstackitems.Where(x => x.StackId == StackId && x.QuestionId == QuestionId).FirstOrDefault();
+
+            if (stackitem != null)
+            {
+                stackitem.QuestionId = -1;
+                stackitem.CategoryId = -1;
+                stackitem.SubcategoryId = -1;
+                stackitem.AdditionalCategoryId = -1;
+                stackitem.AdditionalSubcategoryId = -1;
+                //_context.Questionstackitems.RemoveRange(stackitem);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Index), new { id = StackId });
         }
 
         // POST: QuestionsPreviewFromStack/Delete/5

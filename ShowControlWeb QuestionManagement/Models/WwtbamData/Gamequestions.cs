@@ -32,6 +32,6 @@ namespace ShowControlWeb_QuestionManagement
 
     public enum QuestionTypeDescription
     {
-        Standard = 1, Qualification = 2
+        Standard = 1, Qualification = 2, Undefined = -1
     }
 }
