@@ -18,12 +18,12 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         }
 
         // GET: StackQuestionReplacement
-        public ActionResult Index(int StackId, int Level, int? DownValue, int? UperValue)
+        public ActionResult Index(StackQuestionReplacementViewModel stackQuestionReplacement)
         {
             //to do vidi dali difficulty ili level?
             //to do categorii? 
             var stackQuery = from sq in _context.Questionstacks
-                             where sq.StackId == StackId
+                             where sq.StackId == stackQuestionReplacement.StackId
                              select new Questionstacks
                              {
                                  Stack = sq.Stack,
@@ -33,17 +33,48 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                              };
 
             if (stackQuery.Count() == 0) return NotFound();
+            if (_context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault() == null) return NotFound();
 
             int QuestionType = stackQuery.FirstOrDefault().Type;
 
-            List<ReplacementQuestion> foundReplacementQuestions = new List<ReplacementQuestion>();
-            int difficulty = _context.Qleveldifficultymaping.Where(x => x.Level == Level && x.Maping == "2").FirstOrDefault().Difficulty;
+            int levelFromQId = _context.Questionstackitems.FirstOrDefault(x => x.QuestionId == stackQuestionReplacement.QuestionId).StackLevel;
+            int difficultyFromQ = _context.Qleveldifficultymaping.Where(x => x.Level == levelFromQId && x.Maping == "2").FirstOrDefault().Difficulty;
+            if (stackQuery.FirstOrDefault().StackType == QuestionTypeDescription.Qualification) { difficultyFromQ = 1; }
 
-            List<Gamequestions> replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficulty, 0);
+            int categoryFromQ = _context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault().CategoryId;
+            int subcategoryFromQ = _context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault().SubcategoryId;
+
+            List<Gamequestions> replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 0, NumberOfQuestions: 5);
+
+            List<Gamequestions> additionalQuestions = new List<Gamequestions>();
+            if (stackQuestionReplacement.UpValue.HasValue)
+                for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.UpValue); i++)
+                    additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ + i, 0, NumberOfQuestions: 3));
+
+            if (stackQuestionReplacement.DownValue.HasValue)
+                for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.DownValue); i++)
+                    additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ - i, 0, NumberOfQuestions: 3));
+
+            replacementQuestions.AddRange(additionalQuestions);
+
+            //polni gi so pominati ako nema novi
             if (replacementQuestions.Count == 0)
+                replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 1, NumberOfQuestions: 3);
+
+            if (additionalQuestions.Count == 0)
             {
-                replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficulty, 1, 4);
+                if (stackQuestionReplacement.UpValue.HasValue)
+                    for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.UpValue); i++)
+                        additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ + i, 1, NumberOfQuestions: 1));
+
+                if (stackQuestionReplacement.DownValue.HasValue)
+                    for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.DownValue); i++)
+                        additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ - i, 1, NumberOfQuestions: 1));
+
+                replacementQuestions.AddRange(additionalQuestions);
             }
+
+            List<ReplacementQuestion> foundReplacementQuestions = new List<ReplacementQuestion>();
 
             foreach (Gamequestions q in replacementQuestions)
             {
@@ -52,18 +83,42 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                     QuestionId = q.QuestionId,
                     Question = q.Question,
                     Difficulty = (short)q.Difficulty,
+                    CategoryId = (short)q.CategoryId,
+                    SubcategoryId = (short)q.SubcategoryId,
+                    MappedLevel = -1,
                     TimesAnswered = q.TimesAnswered
                 });
+            }
+            foreach (ReplacementQuestion q in foundReplacementQuestions)
+            {
+                int levelfromr = -1;
+                if (_context.Qleveldifficultymaping.FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2") != null)
+                    levelfromr = _context.Qleveldifficultymaping.FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2").Level;
+
+                q.MappedLevel = (short)levelfromr;
             }
 
             var categoryQuery = _context.Questioncategories.Where(r => r.CategoryId >= 0);
 
             StackQuestionReplacementViewModel viewModel = new StackQuestionReplacementViewModel();
-            viewModel.replacementQuestions = foundReplacementQuestions;
+            viewModel.replacementQuestions = foundReplacementQuestions.OrderBy(x => x.TimesAnswered);
+            if (stackQuestionReplacement.SelectedCategoryId > 0)
+            {
+                viewModel.replacementQuestions = viewModel.replacementQuestions
+                    .Where(x => x.CategoryId == stackQuestionReplacement.SelectedCategoryId);
+            }
+            if (stackQuestionReplacement.SelectedSubcategoryId > 0)
+            {
+                viewModel.replacementQuestions = viewModel.replacementQuestions
+                    .Where(x => x.SubcategoryId == stackQuestionReplacement.SelectedSubcategoryId);
+            }
+
             viewModel.questionCategories = categoryQuery.ToList();
 
-            ViewBag.StackId = StackId;
-            ViewBag.Level = Level;
+            ViewBag.StackId = stackQuestionReplacement.StackId;
+            ViewBag.Level = levelFromQId;
+
+            ViewData["Title"] = levelFromQId;
 
             return View(viewModel);
         }

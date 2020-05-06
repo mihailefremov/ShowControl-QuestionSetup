@@ -117,9 +117,10 @@ else if (TempData["ErrorMessage"] != null)
                 }
                 <tr style="background-color:@rowColor">
                     <td>
-                        <a asp-action="Index" asp-controller="StackQuestionReplacement"
-                           asp-route-StackId="@Model.stack.StackId" asp-route-Level="@item.QuestionLevel">
-                            @item.QuestionLevel
+                        <a asp-action="FindReplacement" asp-controller="QuestionsPreviewFromStack"
+                           asp-route-StackId="@Model.stack.StackId" asp-route-QuestionId="@item.QuestionId"
+                           asp-route-Level="@item.QuestionLevel">
+                                @item.QuestionLevel
                         </a>
                     </td>
                     <td>

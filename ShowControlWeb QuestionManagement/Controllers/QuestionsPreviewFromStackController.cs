@@ -312,6 +312,16 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             }
         }
 
+        public ActionResult FindReplacement(int StackId, int QuestionId, int Level)
+        {
+            var sqReplacement = new StackQuestionReplacementViewModel();
+            sqReplacement.QuestionId = QuestionId;
+            sqReplacement.StackId = StackId;
+            sqReplacement.Level = Level;
+
+            return RedirectToAction("Index", "StackQuestionReplacement", sqReplacement);
+        }
+
         // GET: QuestionsPreviewFromStack/Delete/5
         public ActionResult RemoveQuestionFromStack(int StackId, int QuestionId)
         {

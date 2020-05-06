@@ -1,73 +1,154 @@
 ﻿@model ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels.StackQuestionReplacementViewModel
 
 @{
-    ViewData["Title"] = "Index";
-    //int StackId = ViewBag.StackId;
+    string Title = ViewData["Title"] != null ? ViewData["Title"].ToString() : "";
+    string StackId = ViewContext.RouteData.Values["StackId"] != null ? ViewContext.RouteData.Values["StackId"].ToString() : "";
+    string QuestionId = ViewContext.RouteData.Values["QuestionId"] != null ? ViewContext.RouteData.Values["QuestionId"].ToString() : "";
+    string Level = ViewContext.RouteData.Values["Level"] != null ? ViewContext.RouteData.Values["Level"].ToString() : "";
+    string DownValue = ViewContext.RouteData.Values["DownValue"] != null ? ViewContext.RouteData.Values["DownValue"].ToString() : "";
+    string UpValue = ViewContext.RouteData.Values["UpValue"] != null ? ViewContext.RouteData.Values["UpValue"].ToString() : "";
+    string CategoryId = ViewContext.RouteData.Values["CategoryId"] != null ? ViewContext.RouteData.Values["CategoryId"].ToString() : "";
+    string SubcategoryId = ViewContext.RouteData.Values["SubcategoryId"] != null ? ViewContext.RouteData.Values["SubcategoryId"].ToString() : "";
 }
 
-<h1>Index</h1>
+<h1>Replacement questions for @Title Level</h1>
 
-<p>
-    <a href="#" onclick="javascript:location.reload();">Refresh</a>
-</p>
+<script>
+    function callChangefunc(val) {
+        //window.location.href = "/Controller/ActionMethod?value=" + val;
+        @ViewBag.CategoryId = val;
+    }
+</script>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().Difficulty)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().QuestionId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().Question)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().TimesAnswered)
-            </th>
-            <th>
+@*<div class="col-4">
+        @Html.LabelFor(model => model.questionCategories.FirstOrDefault().Category)
+        @Html.DropDownListFor(Model => Model.questionCategories.FirstOrDefault().CategoryId,
+        new SelectList(Model.questionCategories,
+        @Html.DisplayNameFor(model => model.questionCategories.FirstOrDefault().CategoryId),
+        @Html.DisplayNameFor(model => model.questionCategories.FirstOrDefault().Category)),
+        new { @class = "browser-default custom-select", @onchange = "callChangefunc(this.value)" })
+    </div>*@
+@using (Html.BeginForm("Index", "StackQuestionReplacement", FormMethod.Get))
+{
+<div class="row">
+    <div class="col-3">
 
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.replacementQuestions)
-        {
-            string rowColor = "";
-            @if (item.TimesAnswered != 0)
-            {
-                rowColor = "#ffe375";
-            }
-            else if (item.QuestionId <= 0)
-            {
-                rowColor = "#ff8a8a";
-            }
-            <tr style="background-color:@rowColor">
-                <td>
-                    @Html.DisplayFor(modelItem => item.Difficulty)
-                </td>
-                <td>
-                    @*GameQuestions/Details/3*@
-                    <a asp-action="Details" asp-controller="GameQuestions"
-                       asp-route-id="@item.QuestionId">@item.QuestionId</a>
-                    @*@Html.DisplayFor(modelItem => item.QuestionId)*@
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Question)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TimesAnswered)
-                </td>
-                <td>
-                    <a asp-action="Replace" asp-controller="StackQuestionReplacement"
-                        asp-route-StackId="@ViewBag.StackId"
-                        asp-route-ReplaceQuestionId="@item.QuestionId"
-                        asp-route-Level="@ViewBag.Level">
-                        Replace
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        @Html.HiddenFor(m => m.StackId)
+        @Html.HiddenFor(m => m.QuestionId)
+        @Html.HiddenFor(m => m.Level)
+
+        @Html.LabelFor(model => model.questionCategories.FirstOrDefault().Category)
+        @Html.DropDownListFor(m => m.SelectedCategoryId,
+       new SelectList
+       (Model.questionCategories,
+       @Html.DisplayNameFor(model => model.questionCategories.FirstOrDefault().CategoryId),
+       @Html.DisplayNameFor(model => model.questionCategories.FirstOrDefault().Category)),
+       new { @class = "browser-default custom-select" })
+
+        <span> </span>
+
+    </div>
+
+    <div class="col-3">
+
+        @Html.LabelFor(model => model.questionSubcategories.FirstOrDefault().Subcategory)
+        @Html.DropDownListFor(m => m.SelectedSubcategoryId,
+       new SelectList
+       (Model.questionSubcategories,
+       @Html.DisplayNameFor(model => model.questionSubcategories.FirstOrDefault().SubcategoryId),
+       @Html.DisplayNameFor(model => model.questionSubcategories.FirstOrDefault().Subcategory)),
+       new { @class = "browser-default custom-select" })
+
+        <span> </span>
+    </div>
+
+    <div class="col-1">
+        @Html.Label("Up")
+        @Html.TextBoxFor(model => model.UpValue, "", new { @class = "form-control", @type = "number" })
+    </div>
+
+    <div class="col-1">
+        @Html.Label("Down")
+        @Html.TextBoxFor(model => model.DownValue, "", new { @class = "form-control", @type="number"})
+    </div>
+
+    <div class="col-2 align-self-center">
+        <br />
+        <button type="Submit" class="btn btn-success submit">Search</button>
+    </div>
+</div>
+}
+    <br />
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().Difficulty)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().MappedLevel)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().QuestionId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().Question)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.replacementQuestions.FirstOrDefault().TimesAnswered)
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.replacementQuestions)
+                {
+                    string rowColor = "";
+                    @if (item.TimesAnswered != 0)
+                    {
+                        rowColor = "#ffe375";
+                    }
+                    else if (item.QuestionId <= 0)
+                    {
+                        rowColor = "#ff8a8a";
+                    }
+                    <tr style="background-color:@rowColor">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Difficulty)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MappedLevel)
+                        </td>
+                        <td>
+                            @*GameQuestions/Details/3*@
+                            <a asp-action="Details" asp-controller="GameQuestions"
+                               asp-route-id="@item.QuestionId">@item.QuestionId</a>
+                            @*@Html.DisplayFor(modelItem => item.QuestionId)*@
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Question)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TimesAnswered)
+                        </td>
+                        <td>
+                            <a asp-action="Replace" asp-controller="StackQuestionReplacement"
+                               asp-route-StackId="@ViewBag.StackId"
+                               asp-route-ReplaceQuestionId="@item.QuestionId"
+                               asp-route-Level="@ViewBag.Level">
+                                Replace
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        <a href="#" onclick="javascript:location.reload();">Refresh</a>
+    </p>
