@@ -1,0 +1,55 @@
+﻿@model ShowControlWeb_QuestionManagement.Stackconfigurations
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>StackConfigurations</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StackConfigurationId" class="control-label"></label>
+                <input asp-for="StackConfigurationId" class="form-control" />
+                <span asp-validation-for="StackConfigurationId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UseNewQuestionsForStackBuildUp" class="control-label"></label>
+                <input asp-for="UseNewQuestionsForStackBuildUp" class="form-control" />
+                <span asp-validation-for="UseNewQuestionsForStackBuildUp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UseOldQuestionsForStackBuildUp" class="control-label"></label>
+                <input asp-for="UseOldQuestionsForStackBuildUp" class="form-control" />
+                <span asp-validation-for="UseOldQuestionsForStackBuildUp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UseOldQuestionsForReplacementSearch" class="control-label"></label>
+                <input asp-for="UseOldQuestionsForReplacementSearch" class="form-control" />
+                <span asp-validation-for="UseOldQuestionsForReplacementSearch" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QualificationQuestionsPerStack" class="control-label"></label>
+                <input asp-for="QualificationQuestionsPerStack" class="form-control" />
+                <span asp-validation-for="QualificationQuestionsPerStack" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StandardQuestionsPerStack" class="control-label"></label>
+                <input asp-for="StandardQuestionsPerStack" class="form-control" />
+                <span asp-validation-for="StandardQuestionsPerStack" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

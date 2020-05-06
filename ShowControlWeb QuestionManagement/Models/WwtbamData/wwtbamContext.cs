@@ -38,6 +38,7 @@ namespace ShowControlWeb_QuestionManagement
         public virtual DbSet<Questionstacks> Questionstacks { get; set; }
         public virtual DbSet<Questionsubcategories> Questionsubcategories { get; set; }
         public virtual DbSet<Showsetup> Showsetup { get; set; }
+        public virtual DbSet<Stackconfigurations> Stackconfigurations { get; set; }
         public virtual DbSet<Stateofgameplay> Stateofgameplay { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Userslastactions> Userslastactions { get; set; }
@@ -438,6 +439,15 @@ namespace ShowControlWeb_QuestionManagement
                     .HasMaxLength(150)
                     .IsUnicode(false)
                     .HasDefaultValueSql("('')");
+            });
+
+            modelBuilder.Entity<Stackconfigurations>(entity =>
+            {
+                entity.HasKey(e => e.StackConfigurationId);
+
+                entity.ToTable("stackconfigurations");
+
+                entity.Property(e => e.StackConfigurationId).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<Stateofgameplay>(entity =>

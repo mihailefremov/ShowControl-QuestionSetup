@@ -12,6 +12,64 @@ namespace ShowControlWeb_QuestionManagement.Controllers
     {
         private readonly wwtbamContext _context;
 
+        private bool UseOldQuestions
+        {
+            get
+            {
+                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                if (oldq != null)
+                {
+                    if (oldq.UseOldQuestionsForStackBuildUp.HasValue)
+                    {
+                        if (oldq.UseOldQuestionsForStackBuildUp == 1)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
+            }
+        }
+        private bool UseOldQuestionsForReplacement
+        {
+            get
+            {
+                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                if (oldq != null)
+                {
+                    if (oldq.UseOldQuestionsForReplacementSearch.HasValue)
+                    {
+                        if (oldq.UseOldQuestionsForReplacementSearch == 1)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
+            }
+        }
+        private bool UseNewQuestions
+        {
+            get
+            {
+                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                if (oldq != null)
+                {
+                    if (oldq.UseNewQuestionsForStackBuildUp.HasValue)
+                    {
+                        if (oldq.UseNewQuestionsForStackBuildUp == 1)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
         public StackQuestionReplacementController(wwtbamContext context)
         {
             _context = context;
@@ -33,49 +91,61 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                              };
 
             if (stackQuery.Count() == 0) return NotFound();
-            if (_context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault() == null) return NotFound();
-
+          
             int QuestionType = stackQuery.FirstOrDefault().Type;
 
             int levelFromQId = _context.Questionstackitems.FirstOrDefault(x => x.QuestionId == stackQuestionReplacement.QuestionId).StackLevel;
             int difficultyFromQ = _context.Qleveldifficultymaping.Where(x => x.Level == levelFromQId && x.Maping == "2").FirstOrDefault().Difficulty;
             if (stackQuery.FirstOrDefault().StackType == QuestionTypeDescription.Qualification) { difficultyFromQ = 1; }
 
-            int categoryFromQ = _context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault().CategoryId;
-            int subcategoryFromQ = _context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault().SubcategoryId;
-
-            List<Gamequestions> replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 0, NumberOfQuestions: 5);
-
-            List<Gamequestions> additionalQuestions = new List<Gamequestions>();
-            if (stackQuestionReplacement.UpValue.HasValue)
-                for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.UpValue); i++)
-                    additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ + i, 0, NumberOfQuestions: 3));
-
-            if (stackQuestionReplacement.DownValue.HasValue)
-                for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.DownValue); i++)
-                    additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ - i, 0, NumberOfQuestions: 3));
-
-            replacementQuestions.AddRange(additionalQuestions);
-
-            //polni gi so pominati ako nema novi
-            if (replacementQuestions.Count == 0)
-                replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 1, NumberOfQuestions: 3);
-
-            if (additionalQuestions.Count == 0)
+            int categoryFromQ = -1;
+            int subcategoryFromQ = -1;
+            var gamequestionfromrequest = _context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault();
+            if (gamequestionfromrequest != null)
             {
+                categoryFromQ = gamequestionfromrequest.CategoryId;
+                subcategoryFromQ = gamequestionfromrequest.SubcategoryId;
+            }
+
+            List<Gamequestions> replacementQuestions = new List<Gamequestions>();
+            List<Gamequestions> additionalReplacementQuestions = new List<Gamequestions>();
+            if (UseNewQuestions)
+            {
+                replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 0);
+                //.Take(3).ToList() //= SELECT TOP 3
+
                 if (stackQuestionReplacement.UpValue.HasValue)
                     for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.UpValue); i++)
-                        additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ + i, 1, NumberOfQuestions: 1));
+                        additionalReplacementQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ + i, 0));
 
                 if (stackQuestionReplacement.DownValue.HasValue)
                     for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.DownValue); i++)
-                        additionalQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ - i, 1, NumberOfQuestions: 1));
+                        additionalReplacementQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ - i, 0));
 
-                replacementQuestions.AddRange(additionalQuestions);
+                replacementQuestions.AddRange(additionalReplacementQuestions);
+            }
+
+            //polni gi so pominati ako nema novi
+            if (UseOldQuestions || UseOldQuestionsForReplacement)
+            {
+                if (replacementQuestions.Count == 0)
+                    replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 1);
+
+                if (additionalReplacementQuestions.Count == 0)
+                {
+                    if (stackQuestionReplacement.UpValue.HasValue)
+                        for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.UpValue); i++)
+                            additionalReplacementQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ + i, 1));
+
+                    if (stackQuestionReplacement.DownValue.HasValue)
+                        for (int i = 1; i <= Math.Abs((int)stackQuestionReplacement.DownValue); i++)
+                            additionalReplacementQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, Difficulty: difficultyFromQ - i, 1));
+
+                    replacementQuestions.AddRange(additionalReplacementQuestions);
+                }
             }
 
             List<ReplacementQuestion> foundReplacementQuestions = new List<ReplacementQuestion>();
-
             foreach (Gamequestions q in replacementQuestions)
             {
                 foundReplacementQuestions.Add(new ReplacementQuestion
@@ -101,7 +171,8 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             var categoryQuery = _context.Questioncategories.Where(r => r.CategoryId >= 0);
 
             StackQuestionReplacementViewModel viewModel = new StackQuestionReplacementViewModel();
-            viewModel.replacementQuestions = foundReplacementQuestions.OrderBy(x => x.TimesAnswered);
+            viewModel.replacementQuestions = foundReplacementQuestions.OrderBy(x => x.QuestionId).OrderBy(x => x.TimesAnswered).ToList();
+
             if (stackQuestionReplacement.SelectedCategoryId > 0)
             {
                 viewModel.replacementQuestions = viewModel.replacementQuestions
@@ -112,6 +183,8 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 viewModel.replacementQuestions = viewModel.replacementQuestions
                     .Where(x => x.SubcategoryId == stackQuestionReplacement.SelectedSubcategoryId);
             }
+
+            viewModel.replacementQuestions = new HashSet<ReplacementQuestion>(viewModel.replacementQuestions).ToList();
 
             viewModel.questionCategories = categoryQuery.ToList();
 

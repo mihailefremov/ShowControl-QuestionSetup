@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ShowControlWeb_QuestionManagement.Stackconfigurations>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UseNewQuestionsForStackBuildUp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UseOldQuestionsForStackBuildUp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UseOldQuestionsForReplacementSearch)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QualificationQuestionsPerStack)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StandardQuestionsPerStack)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UseNewQuestionsForStackBuildUp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UseOldQuestionsForStackBuildUp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UseOldQuestionsForReplacementSearch)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QualificationQuestionsPerStack)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StandardQuestionsPerStack)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.StackConfigurationId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.StackConfigurationId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.StackConfigurationId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -59,6 +59,46 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             return View();
         }
 
+
+        private bool UseOldQuestions
+        {
+            get
+            {
+                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                if (oldq != null)
+                {
+                    if (oldq.UseOldQuestionsForStackBuildUp.HasValue)
+                    {
+                        if (oldq.UseOldQuestionsForStackBuildUp == 1)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
+            }
+        }
+        private bool UseNewQuestions
+        {
+            get
+            {
+                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                if (oldq != null)
+                {
+                    if (oldq.UseNewQuestionsForStackBuildUp.HasValue)
+                    {
+                        if (oldq.UseNewQuestionsForStackBuildUp == 1)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
         // GET: QuestionsPreviewFromStack/BuildStack/5
         public ActionResult BuildStack(int id)
         {
@@ -94,8 +134,13 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                     int RndAdditionalCategoryId = -1;
                     int RndAdditionalSubcategoryId = -1;
 
-                    Gamequestions randomquestion = _context.GetRandomlySelectedQuestion(id, questionstack.Type, difficulty, 0);
-                    if (randomquestion == null)
+                    Gamequestions randomquestion = null;
+                    if (UseNewQuestions)
+                    {
+                        randomquestion = _context.GetRandomlySelectedQuestion(id, questionstack.Type, difficulty, 0);
+                    }
+
+                    if (UseOldQuestions && randomquestion == null)
                     {
                         randomquestion = _context.GetRandomlySelectedQuestion(id, questionstack.Type, difficulty, 1);
                     }
