@@ -1,7 +1,6 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,23 +8,18 @@ using System.Threading.Tasks;
 
 namespace DataUpdaterGameQuestions
 {
-    class Program
+    class MsSqlDataLayer
     {
-        public static MySqlConnection MySqlConnection = new MySqlConnection();
-        public static MySqlCommand cmd = new MySqlCommand();
-        
-        static void Main(string[] args)
+        private static SqlConnection SqlConnection = new SqlConnection();
+        private static SqlCommand cmd = new SqlCommand();
+
+        private static SqlTransaction myTrans; // Start a local transaction
+
+       public static void ExecuteMsSql()
         {
             Console.OutputEncoding = Encoding.UTF8;
 
             Console.Clear();
-
-            var skipMySql = Console.ReadLine();
-            if (skipMySql.ToLower().Trim() == "skipmysql")
-            {
-                MsSqlDataLayer.ExecuteMsSql();
-                return;
-            }
 
             string[] rowsofquestion = { "" };
             try
@@ -44,13 +38,13 @@ namespace DataUpdaterGameQuestions
             //SELECT REPLACE(gamequestions2.Question,'\n','|') from gamequestions2 where Question REGEXP "\n";
 
             int successes = 0;
-           
+
             string errors = "";
 
             try
             {
-                MySqlConnection.ConnectionString = DatabasesSettings.Default.showtimeDBconnectionSQL;
-                MySqlConnection.Open();
+                SqlConnection.ConnectionString = DatabasesSettings.Default.showtimeDBconnectionMSSQL;
+                SqlConnection.Open();
             }
             catch (Exception e)
             {
@@ -58,9 +52,9 @@ namespace DataUpdaterGameQuestions
                 Console.ReadKey();
                 return;
             }
-            
-            Console.WriteLine($"Importing questions located on desktop file ({Properties.Settings.Default.FileNameWithExtensionForQuestionImport})\r\nto server/datasource: {MySqlConnection.DataSource} database: {MySqlConnection.Database} ?");
-            
+
+            Console.WriteLine($"MS SQL Importing questions located on desktop file ({Properties.Settings.Default.FileNameWithExtensionForQuestionImport})\r\nto server/datasource: {SqlConnection.DataSource} database: {SqlConnection.Database} ?");
+
             writeallq(rowsofquestion);
 
             Console.WriteLine("------------Press any key to continue...------------");
@@ -79,8 +73,7 @@ namespace DataUpdaterGameQuestions
                 return;
             }
 
-            MySqlTransaction myTrans; // Start a local transaction
-            myTrans = MySqlConnection.BeginTransaction();
+            myTrans = SqlConnection.BeginTransaction();
 
             for (int i = 0; i < rowsofquestion.Length; i++)
             {
@@ -138,8 +131,8 @@ namespace DataUpdaterGameQuestions
                 }
                 finally
                 {
-                    MySqlConnection.Close();
-                    MySqlConnection.Dispose();
+                    SqlConnection.Close();
+                    SqlConnection.Dispose();
                 }
 
                 Console.Write($"Error while importing at row(s): {errors.Trim()} \r\nNo question is imported.");
@@ -159,8 +152,8 @@ namespace DataUpdaterGameQuestions
                 }
                 finally
                 {
-                    MySqlConnection.Close();
-                    MySqlConnection.Dispose();
+                    SqlConnection.Close();
+                    SqlConnection.Dispose();
                 }
 
                 try
@@ -172,6 +165,7 @@ namespace DataUpdaterGameQuestions
                         // Create a file to write to.
                         using (StreamWriter sw = File.CreateText(path))
                         {
+                            sw.WriteLine("");
                             sw.WriteLine("Hello");
                             sw.WriteLine("And");
                             sw.WriteLine("Welcome");
@@ -182,12 +176,12 @@ namespace DataUpdaterGameQuestions
                     // if it is not deleted.
                     using (StreamWriter sw = File.AppendText(path))
                     {
-                        sw.WriteLine("");
                         sw.WriteLine("This");
                         sw.WriteLine("is Extra");
                         sw.WriteLine("Text");
                     }
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
 
                 } //damage file intentionally to not be imported again
@@ -195,11 +189,6 @@ namespace DataUpdaterGameQuestions
             }
 
             Console.ReadKey();
-
-            MsSqlDataLayer.ExecuteMsSql();
-
-            Console.ReadKey();
-
         }
 
 
@@ -222,9 +211,12 @@ namespace DataUpdaterGameQuestions
         {
             try
             {
-                cmd = MySqlConnection.CreateCommand();
-                string database = DatabasesSettings.Default.QuestionDB_setTable1;
-                cmd.CommandText = $"ALTER TABLE {database} AUTO_INCREMENT = 0";
+                cmd = SqlConnection.CreateCommand();
+                string questiontable = DatabasesSettings.Default.QuestionDB_setTable1;
+                cmd.CommandText = $"SELECT MAX(QuestionID) FROM {questiontable}";
+                var maxQID = cmd.ExecuteScalar();
+                Console.WriteLine("MAX-QID"+maxQID);
+                cmd.CommandText = $"DBCC CHECKIDENT ({questiontable}, RESEED, {maxQID})";
                 cmd.ExecuteNonQuery();
             }
             catch (Exception)
@@ -246,10 +238,11 @@ namespace DataUpdaterGameQuestions
             try
             {
                 String gameqTable = DatabasesSettings.Default.QuestionDB_setTable1;
-                cmd = MySqlConnection.CreateCommand();
+                cmd = SqlConnection.CreateCommand();
+                cmd.Transaction = myTrans;
                 cmd.CommandText = "insert into " + gameqTable
-                + "(Difficulty,Type,Question,Answer1,Answer2,Answer3,Answer4,CorrectAnswer,CategoryID,SubcategoryID,AdditionalCategoryID,AdditionalSubcategoryID,MoreInformation,Pronunciation,TimesAnswered) "
-                + " values(@Difficulty,@Type,@Question,@Answer1,@Answer2,@Answer3,@Answer4,@CorrectAnswer,@CategoryID,@SubcategoryID,@AdditionalCategoryID,@AdditionalSubcategoryID,@MoreInformation,@Pronunciation,@TimesAnswered) ";
+                + " (Difficulty,Type,Question,Answer1,Answer2,Answer3,Answer4,CorrectAnswer,CategoryID,SubcategoryID,AdditionalCategoryID,AdditionalSubcategoryID,MoreInformation,Pronunciation,TimesAnswered) "
+                + " values (@Difficulty,@Type,@Question,@Answer1,@Answer2,@Answer3,@Answer4,@CorrectAnswer,@CategoryID,@SubcategoryID,@AdditionalCategoryID,@AdditionalSubcategoryID,@MoreInformation,@Pronunciation,@TimesAnswered) ";
                 //+ " on duplicate key update QuestionID=@QuestionID,Difficulty=@Difficulty,Type=@Type,Question=@Question,Answer1=@Answer1,Answer2=@Answer2,Answer3=@Answer3,Answer4=@Answer4,CorrectAnswer=@CorrectAnswer,CategoryID=@CategoryID,SubcategoryID=@SubcategoryID,MoreInformation=@MoreInformation,Pronunciation=@Pronunciation,Comments=@Comments,TimesAnswered=@TimesAnswered";
                 cmd.Parameters.AddWithValue("@Difficulty", questionrow.ElementAt(4));
                 cmd.Parameters.AddWithValue("@Type", questionrow.ElementAt(5));
@@ -281,9 +274,9 @@ namespace DataUpdaterGameQuestions
         private static void writeallq(string[] readlines)
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;
-            foreach(string q in readlines)
+            foreach (string q in readlines)
             {
-                Console.WriteLine(q.Replace("\t"," "));
+                Console.WriteLine(q.Replace("\t", " "));
             }
             Console.ForegroundColor = ConsoleColor.Gray;
         }

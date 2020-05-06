@@ -12,7 +12,7 @@ namespace DataUpdaterGameQuestions {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
     internal sealed partial class DatabasesSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static DatabasesSettings defaultInstance = ((DatabasesSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new DatabasesSettings())));
@@ -33,6 +33,18 @@ namespace DataUpdaterGameQuestions {
             }
             set {
                 this["showtimeDBconnectionSQL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("server=IDEA-PC\\SQLEXPRESS02;database=wwtbam;integrated security=true")]
+        public string showtimeDBconnectionMSSQL {
+            get {
+                return ((string)(this["showtimeDBconnectionMSSQL"]));
+            }
+            set {
+                this["showtimeDBconnectionMSSQL"] = value;
             }
         }
         

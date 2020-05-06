@@ -5,6 +5,9 @@
     <Setting Name="showtimeDBconnectionSQL" Type="System.String" Scope="User">
       <Value Profile="(Default)">Server = 127.0.0.1;Uid=root;Password=P@ssw0rd;Database=wwtbam;Character Set=utf8;</Value>
     </Setting>
+    <Setting Name="showtimeDBconnectionMSSQL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">server=IDEA-PC\SQLEXPRESS02;database=wwtbam;integrated security=true</Value>
+    </Setting>    
     <Setting Name="QuestionDB_setTable1" Type="System.String" Scope="User">
       <Value Profile="(Default)">gamequestions</Value>
     </Setting>
