@@ -110,7 +110,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = gamequestions.QuestionId });
             }
             return View(gamequestions);
         }

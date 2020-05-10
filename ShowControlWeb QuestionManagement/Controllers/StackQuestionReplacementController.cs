@@ -94,7 +94,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
           
             int QuestionType = stackQuery.FirstOrDefault().Type;
 
-            int levelFromQId = _context.Questionstackitems.FirstOrDefault(x => x.QuestionId == stackQuestionReplacement.QuestionId).StackLevel;
+            int levelFromQId = _context.Questionstackitems.FirstOrDefault(x => x.QuestionId == stackQuestionReplacement.QuestionId && x.StackId == stackQuestionReplacement.StackId).StackLevel;
             int difficultyFromQ = _context.Qleveldifficultymaping.Where(x => x.Level == levelFromQId && x.Maping == "2").FirstOrDefault().Difficulty;
             if (stackQuery.FirstOrDefault().StackType == QuestionTypeDescription.Qualification) { difficultyFromQ = 1; }
 
@@ -128,8 +128,8 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             //polni gi so pominati ako nema novi
             if (UseOldQuestions || UseOldQuestionsForReplacement)
             {
-                if (replacementQuestions.Count == 0)
-                    replacementQuestions = _context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 1);
+                //if (replacementQuestions.Count == 0)
+                    replacementQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 1).Take(5));
 
                 if (additionalReplacementQuestions.Count == 0)
                 {
@@ -198,7 +198,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
         public ActionResult Replace(int StackId, int Level, int ReplaceQuestionId)
         {
-            var questionstackitem = _context.Questionstackitems.First(x => x.StackId == StackId && x.StackLevel == Level);
+            var questionstackitem = _context.Questionstackitems.FirstOrDefault(x => x.StackId == StackId && x.StackLevel == Level);
             questionstackitem.QuestionId = ReplaceQuestionId;
             _context.SaveChanges();
 
