@@ -1,4 +1,5 @@
 ﻿@model ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels.StackQuestionPreviewViewModel
+@await Html.PartialAsync("_QuestionModalPreview")
 
 @{
     string indexTitle = "";
@@ -120,12 +121,12 @@ else if (TempData["ErrorMessage"] != null)
                         <a asp-action="FindReplacement" asp-controller="QuestionsPreviewFromStack"
                            asp-route-StackId="@Model.stack.StackId" asp-route-QuestionId="@item.QuestionId"
                            asp-route-Level="@item.QuestionLevel">
-                                @item.QuestionLevel
+                            @item.QuestionLevel
                         </a>
                     </td>
                     <td>
-                        <a asp-action="Details" asp-controller="GameQuestions"
-                           asp-route-id="@item.QuestionId">
+                        @*asp-action="Details" asp-controller="GameQuestions" asp-route-id="@item.QuestionId"*@
+                        <a href="#" onclick="PreviewQuestion(@item.QuestionId, @item.QuestionLevel)">
                             @item.QuestionId
                         </a>
                     </td>
@@ -158,6 +159,6 @@ else if (TempData["ErrorMessage"] != null)
         </tbody>
     </table>
 </div>
-    <div>
-        <a asp-action="Index" asp-controller="Stacks">Back to List</a>
-    </div>
+<div>
+    <a asp-action="Index" asp-controller="Stacks">Back to List</a>
+</div>

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ShowControlWeb_QuestionManagement;
 
 namespace ShowControlWeb_QuestionManagement.Controllers
@@ -40,6 +41,28 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             }
 
             return View(gamequestions);
+        }
+
+
+        // GET: GameQuestions/DetailsJson/5
+        [HttpGet]
+        public JsonResult DetailsJson(int? id)
+        {
+
+            //System.Text.Json.JsonSerializerOptions.MaxDepth = 0;
+
+            if (id == null)
+            {
+                return Json("");
+            }
+
+            var gamequestions = _context.Gamequestions.FirstOrDefault(m => m.QuestionId == id);
+            if (gamequestions == null)
+            {
+                return Json("Not Found");
+            }
+
+            return Json(gamequestions);
         }
 
         // GET: GameQuestions/Create
