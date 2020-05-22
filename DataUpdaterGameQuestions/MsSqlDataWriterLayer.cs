@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace DataUpdaterGameQuestions
 {
-    class MsSqlDataLayer
+    class MsSqlDataWriterLayer
     {
         private static SqlConnection SqlConnection = new SqlConnection();
         private static SqlCommand cmd = new SqlCommand();
 
         private static SqlTransaction myTrans; // Start a local transaction
 
-       public static void ExecuteMsSql()
+        public void ImportAllQuestions()
         {
             Console.OutputEncoding = Encoding.UTF8;
 
@@ -188,9 +188,7 @@ namespace DataUpdaterGameQuestions
 
             }
 
-            Console.ReadKey();
         }
-
 
         private static bool ImportQuestionInDatabase(string[] questionrow)
         {
@@ -215,7 +213,7 @@ namespace DataUpdaterGameQuestions
                 string questiontable = DatabasesSettings.Default.QuestionDB_setTable1;
                 cmd.CommandText = $"SELECT MAX(QuestionID) FROM {questiontable}";
                 var maxQID = cmd.ExecuteScalar();
-                Console.WriteLine("MAX-QID"+maxQID);
+                Console.WriteLine("MAX-QID" + maxQID);
                 cmd.CommandText = $"DBCC CHECKIDENT ({questiontable}, RESEED, {maxQID})";
                 cmd.ExecuteNonQuery();
             }

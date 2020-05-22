@@ -5,5 +5,8 @@
     <Setting Name="FileNameWithExtensionForQuestionImport" Type="System.String" Scope="User">
       <Value Profile="(Default)">dopolna.txt</Value>
     </Setting>
+    <Setting Name="FileNameWithoutExtensionForQuestionExport" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ExportQuestionsFile</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
