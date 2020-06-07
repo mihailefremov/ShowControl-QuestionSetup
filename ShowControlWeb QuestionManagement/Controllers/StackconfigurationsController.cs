@@ -53,7 +53,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StackConfigurationId,UseNewQuestionsForStackBuildUp,UseOldQuestionsForStackBuildUp,UseOldQuestionsForReplacementSearch,QualificationQuestionsPerStack,StandardQuestionsPerStack")] Stackconfigurations stackconfigurations)
+        public async Task<IActionResult> Create([Bind("StackConfigurationId,MappingTypeForStackBuildUp,UseNewQuestionsForStackBuildUp,UseOldQuestionsForStackBuildUp,UseOldQuestionsForReplacementSearch,QualificationQuestionsPerStack,StandardQuestionsPerStack")] Stackconfigurations stackconfigurations)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StackConfigurationId,UseNewQuestionsForStackBuildUp,UseOldQuestionsForStackBuildUp,UseOldQuestionsForReplacementSearch,QualificationQuestionsPerStack,StandardQuestionsPerStack")] Stackconfigurations stackconfigurations)
+        public async Task<IActionResult> Edit(int id, [Bind("StackConfigurationId,MappingTypeForStackBuildUp,UseNewQuestionsForStackBuildUp,UseOldQuestionsForStackBuildUp,UseOldQuestionsForReplacementSearch,QualificationQuestionsPerStack,StandardQuestionsPerStack")] Stackconfigurations stackconfigurations)
         {
             if (id != stackconfigurations.StackConfigurationId)
             {
@@ -131,6 +131,20 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             }
 
             return View(stackconfigurations);
+        }
+
+        public IActionResult SwapGamequestionTables()
+        {
+            try
+            {
+                _context.SwapGamequestionTables();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Stackconfigurations/Delete/5

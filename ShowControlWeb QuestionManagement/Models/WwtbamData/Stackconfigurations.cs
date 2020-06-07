@@ -6,6 +6,7 @@ namespace ShowControlWeb_QuestionManagement
     public partial class Stackconfigurations
     {
         public int StackConfigurationId { get; set; }
+        public int? MappingTypeForStackBuildUp { get; set; }
         public byte? UseNewQuestionsForStackBuildUp { get; set; }
         public byte? UseOldQuestionsForStackBuildUp { get; set; }
         public byte? UseOldQuestionsForReplacementSearch { get; set; }

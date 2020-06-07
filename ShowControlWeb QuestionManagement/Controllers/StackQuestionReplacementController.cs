@@ -69,7 +69,21 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 return true;
             }
         }
-
+        private int MappingType
+        {
+            get
+            {
+                var mapType = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                if (mapType != null)
+                {
+                    if (mapType.MappingTypeForStackBuildUp.HasValue)
+                    {
+                        return (int)mapType.MappingTypeForStackBuildUp;
+                    }
+                }
+                return -1;
+            }
+        }
         public StackQuestionReplacementController(wwtbamContext context)
         {
             _context = context;
@@ -95,7 +109,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             int QuestionType = stackQuery.FirstOrDefault().Type;
 
             int levelFromQId = _context.Questionstackitems.FirstOrDefault(x => x.QuestionId == stackQuestionReplacement.QuestionId && x.StackId == stackQuestionReplacement.StackId).StackLevel;
-            int difficultyFromQ = _context.Qleveldifficultymaping.Where(x => x.Level == levelFromQId && x.Maping == "2").FirstOrDefault().Difficulty;
+            int difficultyFromQ = _context.Qleveldifficultymaping.Where(x => x.Level == levelFromQId && x.Maping == MappingType.ToString()).FirstOrDefault().Difficulty;
             if (stackQuery.FirstOrDefault().StackType == QuestionTypeDescription.Qualification) { difficultyFromQ = 1; }
 
             int categoryFromQ = -1;

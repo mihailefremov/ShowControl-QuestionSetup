@@ -1,0 +1,92 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<script>
+    var PreviewQuestion = function (QuestionId, Level) {
+
+        document.getElementById("exampleModalLongTitle").innerHTML = "Question <a target='_blank' href='/GameQuestions/Details/"
+            + QuestionId + "'> " + QuestionId + " </a> Level " + Level;
+        $.get("/GameQuestions/DetailsJson/" + QuestionId, function (result) {
+            document.getElementById("questiontext").innerHTML = result["question"];
+            document.getElementById("answer1text").innerHTML = result["answer1"];
+            document.getElementById("answer2text").innerHTML = result["answer2"];
+            document.getElementById("answer3text").innerHTML = result["answer3"];
+            document.getElementById("answer4text").innerHTML = result["answer4"];
+            document.getElementById("correcttext").innerHTML = result["correctAnswer"];
+            document.getElementById("correcttext").innerHTML = result["correctAnswer"];
+            document.getElementById("explanationtext").innerHTML = result["moreInformation"];
+
+            $("#exampleModalCenter").modal('show');
+        });
+    }
+</script>
+
+<!--Button trigger modal
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Launch demo modal
+</button>
+-->
+<!--Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <dl>
+                    <dt>
+                        Question:
+                    </dt>
+                    <dd>
+                        <div id="questiontext"></div>
+                    </dd>
+                    <dt>
+                        Answer1:
+                    </dt>
+                    <dd>
+                        <div id="answer1text"></div>
+                    </dd>
+                    <dt>
+                        Answer2:
+                    </dt>
+                    <dd>
+                        <div id="answer2text"></div>
+                    </dd>
+                    <dt>
+                        Answer3:
+                    </dt>
+                    <dd>
+                        <div id="answer3text"></div>
+                    </dd>
+                    <dt>
+                        Answer4:
+                    </dt>
+                    <dd>
+                        <div id="answer4text"></div>
+                    </dd>
+                    <dt>
+                        Correct:
+                    </dt>
+                    <dd>
+                        <div id="correcttext"></div>
+                    </dd>
+                    <dt>
+                        Explanation:
+                    </dt>
+                    <dd>
+                        <div id="explanationtext"></div>
+                    </dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary">Save changes</button>*@
+            </div>
+        </div>
+    </div>
+</div>

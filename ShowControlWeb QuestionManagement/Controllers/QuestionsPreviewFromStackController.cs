@@ -98,6 +98,21 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 return true;
             }
         }
+        private int MappingType
+        {
+            get
+            {
+                var mapType = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                if (mapType != null)
+                {
+                    if (mapType.MappingTypeForStackBuildUp.HasValue)
+                    {
+                        return (int)mapType.MappingTypeForStackBuildUp;
+                    }
+                }
+                return -1;
+            }
+        }
 
         // GET: QuestionsPreviewFromStack/BuildStack/5
         public ActionResult BuildStack(int id)
@@ -125,7 +140,8 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
                 for (int i = 1; i <= totalQuestions; i++)
                 {
-                    int difficulty = _context.Qleveldifficultymaping.Where(x => x.Level == i && x.Maping == "2").FirstOrDefault().Difficulty;
+                    string MapType = MappingType.ToString();
+                    int difficulty = _context.Qleveldifficultymaping.Where(x => x.Level == i && x.Maping == MapType).FirstOrDefault().Difficulty;
                     if (questionstack.StackType == QuestionTypeDescription.Qualification) difficulty = ((i+1) % 2) + 1; //alternate 1-2-1-2
                     
                     long RndQuestionId = -1;
@@ -171,7 +187,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             }
             catch (Exception e)
             {
-                TempData["ErrorMessage"] = e.Message.ToString();
+                TempData["ErrorMessage"] = e.StackTrace ?? "Error";
             }
 
             return RedirectToAction(nameof(Index),new { id });

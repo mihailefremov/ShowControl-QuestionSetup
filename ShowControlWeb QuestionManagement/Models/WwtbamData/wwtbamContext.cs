@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels;
 
 namespace ShowControlWeb_QuestionManagement
@@ -23,7 +25,7 @@ namespace ShowControlWeb_QuestionManagement
 
         }
 
-        
+
         public virtual DbSet<Audiencevotes> Audiencevotes { get; set; }
         public virtual DbSet<Contestantbank> Contestantbank { get; set; }
         public virtual DbSet<Contestantonshow> Contestantonshow { get; set; }
@@ -62,13 +64,22 @@ namespace ShowControlWeb_QuestionManagement
                 $"@StackID = {StackId}, @CurrentStackLevel = {CurrentStackLevel}, @NextStackLevel = {NextStackLevel}";
             this.Database.ExecuteSqlRaw(query);
         }
-
+        public virtual void SwapGamequestionTables()
+        {
+            var query = $"" +
+            //"USE [wwtbam];" +
+            "EXEC sp_rename 'dbo.gamequestions', 'gamequestions_temp';" +
+            "EXEC sp_rename 'dbo.gamequestions-2ndLang', 'gamequestions';" +
+            "EXEC sp_rename 'dbo.gamequestions_temp', 'gamequestions-2ndLang'; ";
+            this.Database.ExecuteSqlRaw(query);
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=IDEA-PC\\SQLEXPRESS03;Initial Catalog=wwtbam;Integrated Security=True");
+                optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["DbConnectionString_wwtbam"].ConnectionString);
+                //"Data Source=IDEA-PC\\SQLEXPRESS03;Initial Catalog=wwtbam;Integrated Security=True");
             }
         }
 

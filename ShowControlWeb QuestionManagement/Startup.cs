@@ -24,6 +24,7 @@ namespace ShowControlWeb_QuestionManagement
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //https://stackoverflow.com/questions/40744245/use-appsettings-json-to-configure-dbcontext-mapping
             services.AddDbContext<wwtbamContext>(options => options.UseSqlServer(Configuration.GetValue<string>("DbConnectionString_wwtbam")));
             services.AddControllersWithViews();
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
