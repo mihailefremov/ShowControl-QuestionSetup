@@ -12,7 +12,7 @@ namespace DataUpdaterGameQuestions {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
     internal sealed partial class DatabasesSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static DatabasesSettings defaultInstance = ((DatabasesSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new DatabasesSettings())));
@@ -27,12 +27,12 @@ namespace DataUpdaterGameQuestions {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Server = 127.0.0.1;Uid=root;Password=P@ssw0rd;Database=wwtbam;Character Set=utf8;" +
             "")]
-        public string showtimeDBconnectionSQL {
+        public string showtimeDBconnectionMYSQL {
             get {
-                return ((string)(this["showtimeDBconnectionSQL"]));
+                return ((string)(this["showtimeDBconnectionMYSQL"]));
             }
             set {
-                this["showtimeDBconnectionSQL"] = value;
+                this["showtimeDBconnectionMYSQL"] = value;
             }
         }
         

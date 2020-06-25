@@ -24,7 +24,7 @@ namespace DataUpdaterGameQuestions
 
             try
             {
-                MySqlConnection.ConnectionString = DatabasesSettings.Default.showtimeDBconnectionSQL;
+                MySqlConnection.ConnectionString = DatabasesSettings.Default.showtimeDBconnectionMYSQL;
                 MySqlConnection.Open();
             }
             catch (Exception e)

@@ -2,12 +2,12 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DataUpdaterGameQuestions" GeneratedClassName="DatabasesSettings">
   <Profiles />
   <Settings>
-    <Setting Name="showtimeDBconnectionSQL" Type="System.String" Scope="User">
+    <Setting Name="showtimeDBconnectionMYSQL" Type="System.String" Scope="User">
       <Value Profile="(Default)">Server = 127.0.0.1;Uid=root;Password=P@ssw0rd;Database=wwtbam;Character Set=utf8;</Value>
     </Setting>
     <Setting Name="showtimeDBconnectionMSSQL" Type="System.String" Scope="User">
       <Value Profile="(Default)">server=IDEA-PC\SQLEXPRESS02;database=wwtbam;integrated security=true</Value>
-    </Setting>    
+    </Setting>
     <Setting Name="QuestionDB_setTable1" Type="System.String" Scope="User">
       <Value Profile="(Default)">gamequestions</Value>
     </Setting>
