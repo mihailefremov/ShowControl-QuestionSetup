@@ -3,6 +3,9 @@
 *@
 
 <script>
+
+    var QuestionIdModal = -1;
+
     var PreviewQuestion = function (QuestionId, Level) {
 
         document.getElementById("exampleModalLongTitle").innerHTML = "Question <a target='_blank' href='/GameQuestions/Details/"
@@ -16,10 +19,19 @@
             document.getElementById("correcttext").innerHTML = result["correctAnswer"];
             document.getElementById("correcttext").innerHTML = result["correctAnswer"];
             document.getElementById("explanationtext").innerHTML = result["moreInformation"];
+            QuestionIdModal = QuestionId;
 
             $("#exampleModalCenter").modal('show');
         });
     }
+
+    $(document).ready(function () {
+        $("#exampleModalCenter").on('shown.bs.modal', function () {
+            //alert('The modal is fully shown.');
+            $('#GridLevelQuestionId' + QuestionIdModal).focus();
+        });
+    });
+
 </script>
 
 <!--Button trigger modal

@@ -117,6 +117,7 @@
                 {
                     rowColor = "#ff8a8a";
                 }
+                string GridLevelQuestionId = $"GridLevelQuestionId" + item.QuestionId;
                 <tr style="background-color:@rowColor">
                     <td>
                         @Html.DisplayFor(modelItem => item.Difficulty)
@@ -126,7 +127,7 @@
                     </td>
                     <td>
                         @*GameQuestions/Details/3*@
-                        <a href="#" onclick="PreviewQuestion(@item.QuestionId, @item.MappedLevel)">
+                        <a href="#" id="@GridLevelQuestionId" onclick="PreviewQuestion(@item.QuestionId, @item.MappedLevel)">
                             @item.QuestionId
                         </a>
                         @*@Html.DisplayFor(modelItem => item.QuestionId)*@
