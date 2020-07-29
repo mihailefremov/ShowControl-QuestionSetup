@@ -3,13 +3,7 @@
 
 @{
     string Title = ViewData["Title"] != null ? ViewData["Title"].ToString() : "";
-    string StackId = ViewContext.RouteData.Values["StackId"] != null ? ViewContext.RouteData.Values["StackId"].ToString() : "";
     string QuestionId = ViewContext.RouteData.Values["QuestionId"] != null ? ViewContext.RouteData.Values["QuestionId"].ToString() : "";
-    string Level = ViewContext.RouteData.Values["Level"] != null ? ViewContext.RouteData.Values["Level"].ToString() : "";
-    string DownValue = ViewContext.RouteData.Values["DownValue"] != null ? ViewContext.RouteData.Values["DownValue"].ToString() : "";
-    string UpValue = ViewContext.RouteData.Values["UpValue"] != null ? ViewContext.RouteData.Values["UpValue"].ToString() : "";
-    string CategoryId = ViewContext.RouteData.Values["CategoryId"] != null ? ViewContext.RouteData.Values["CategoryId"].ToString() : "";
-    string SubcategoryId = ViewContext.RouteData.Values["SubcategoryId"] != null ? ViewContext.RouteData.Values["SubcategoryId"].ToString() : "";
 }
 
 <h1>Replacement questions for @Title Level</h1>
@@ -117,7 +111,7 @@
                 {
                     rowColor = "#ff8a8a";
                 }
-                string GridLevelQuestionId = $"GridLevelQuestionId" + item.QuestionId;
+                string gridLevelQuestionId = $"GridLevelQuestionId" + item.QuestionId;
                 <tr style="background-color:@rowColor">
                     <td>
                         @Html.DisplayFor(modelItem => item.Difficulty)
@@ -127,7 +121,7 @@
                     </td>
                     <td>
                         @*GameQuestions/Details/3*@
-                        <a href="#" id="@GridLevelQuestionId" onclick="PreviewQuestion(@item.QuestionId, @item.MappedLevel)">
+                        <a href="#" id="@gridLevelQuestionId" onclick="PreviewQuestion(@item.QuestionId, @item.MappedLevel)">
                             @item.QuestionId
                         </a>
                         @*@Html.DisplayFor(modelItem => item.QuestionId)*@

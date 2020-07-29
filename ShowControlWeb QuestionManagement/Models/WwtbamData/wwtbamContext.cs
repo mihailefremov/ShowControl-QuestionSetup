@@ -11,7 +11,7 @@ using ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels;
 
 namespace ShowControlWeb_QuestionManagement
 {
-    public partial class wwtbamContext : DbContext
+    public sealed partial class wwtbamContext : DbContext
     {
         //Scaffold-DbContext 'Data Source=IDEA-PC\SQLEXPRESS02;Initial Catalog=wwtbam;Integrated Security=True' Microsoft.EntityFrameworkCore.SqlServer   
         public wwtbamContext()
@@ -26,45 +26,45 @@ namespace ShowControlWeb_QuestionManagement
         }
 
 
-        public virtual DbSet<Audiencevotes> Audiencevotes { get; set; }
-        public virtual DbSet<Contestantbank> Contestantbank { get; set; }
-        public virtual DbSet<Contestantonshow> Contestantonshow { get; set; }
-        public virtual DbSet<Gamequestions> Gamequestions { get; set; }
-        public virtual DbSet<Mapingtypes> Mapingtypes { get; set; }
-        public virtual DbSet<Moneytreetypes> Moneytreetypes { get; set; }
-        public virtual DbSet<Moneytreevalues> Moneytreevalues { get; set; }
-        public virtual DbSet<Qleveldifficultymaping> Qleveldifficultymaping { get; set; }
-        public virtual DbSet<Questioncategories> Questioncategories { get; set; }
-        public virtual DbSet<Livestacks> Livestacks { get; set; }
-        public virtual DbSet<Questionstackitems> Questionstackitems { get; set; }
-        public virtual DbSet<Questionstacks> Questionstacks { get; set; }
-        public virtual DbSet<Questionsubcategories> Questionsubcategories { get; set; }
-        public virtual DbSet<Showsetup> Showsetup { get; set; }
-        public virtual DbSet<Stackconfigurations> Stackconfigurations { get; set; }
-        public virtual DbSet<Stateofgameplay> Stateofgameplay { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<Userslastactions> Userslastactions { get; set; }
-        public virtual Gamequestions GetRandomlySelectedQuestion(int StackId, int Type, int Difficulty, int TimesAnswered)
+        public DbSet<Audiencevotes> Audiencevotes { get; set; }
+        public DbSet<Contestantbank> Contestantbank { get; set; }
+        public DbSet<Contestantonshow> Contestantonshow { get; set; }
+        public DbSet<Gamequestions> Gamequestions { get; set; }
+        public DbSet<Mapingtypes> Mapingtypes { get; set; }
+        public DbSet<Moneytreetypes> Moneytreetypes { get; set; }
+        public DbSet<Moneytreevalues> Moneytreevalues { get; set; }
+        public DbSet<Qleveldifficultymaping> Qleveldifficultymaping { get; set; }
+        public DbSet<Questioncategories> Questioncategories { get; set; }
+        public DbSet<Livestacks> Livestacks { get; set; }
+        public DbSet<Questionstackitems> Questionstackitems { get; set; }
+        public DbSet<Questionstacks> Questionstacks { get; set; }
+        public DbSet<Questionsubcategories> Questionsubcategories { get; set; }
+        public DbSet<Showsetup> Showsetup { get; set; }
+        public DbSet<Stackconfigurations> Stackconfigurations { get; set; }
+        public DbSet<Stateofgameplay> Stateofgameplay { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public DbSet<Userslastactions> Userslastactions { get; set; }
+        public Gamequestions GetRandomlySelectedQuestion(int StackId, int Type, int Difficulty, int TimesAnswered)
         {
             var query = $"EXEC [dbo].[proc_GetRandomlySelectedQuestion] " +
                 $"@StackID = {StackId}, @Type = {Type}, @Difficulty = {Difficulty}, @TimesAnswered = {TimesAnswered}";
             Gamequestions qid = this.Gamequestions.FromSqlRaw(query).ToList().FirstOrDefault();
             return qid;
         }
-        public virtual List<Gamequestions> GetReplacementQuestions(int Type, int Difficulty, int TimesAnswered, int NumberOfQuestions = 8)
+        public List<Gamequestions> GetReplacementQuestions(int Type, int Difficulty, int TimesAnswered, int NumberOfQuestions = 8)
         {
             var query = $"EXEC [dbo].[proc_GetReplacementQuestions] " +
                 $"@Type = {Type}, @Difficulty = {Difficulty}, @TimesAnswered = {TimesAnswered}, @NumberOfQuestions = {NumberOfQuestions}";
             List<Gamequestions> qid = this.Gamequestions.FromSqlRaw(query).ToList();
             return qid;
         }
-        public virtual void SwapStackQuestionLevel(int StackId, int CurrentStackLevel, int NextStackLevel)
+        public void SwapStackQuestionLevel(int StackId, int CurrentStackLevel, int NextStackLevel)
         {
             var query = $"EXEC [dbo].[proc_SwapStackQuestionLevel] " +
                 $"@StackID = {StackId}, @CurrentStackLevel = {CurrentStackLevel}, @NextStackLevel = {NextStackLevel}";
             this.Database.ExecuteSqlRaw(query);
         }
-        public virtual void SwapGamequestionTables()
+        public void SwapGamequestionTables()
         {
             var query = $"" +
             //"USE [wwtbam];" +

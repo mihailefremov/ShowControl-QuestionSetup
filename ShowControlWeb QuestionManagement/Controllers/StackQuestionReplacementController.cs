@@ -16,38 +16,16 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         {
             get
             {
-                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
-                if (oldq != null)
-                {
-                    if (oldq.UseOldQuestionsForStackBuildUp.HasValue)
-                    {
-                        if (oldq.UseOldQuestionsForStackBuildUp == 1)
-                        {
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-                return false;
+                Stackconfigurations oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                return oldq?.UseOldQuestionsForStackBuildUp != null && oldq.UseOldQuestionsForStackBuildUp == 1;
             }
         }
         private bool UseOldQuestionsForReplacement
         {
             get
             {
-                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
-                if (oldq != null)
-                {
-                    if (oldq.UseOldQuestionsForReplacementSearch.HasValue)
-                    {
-                        if (oldq.UseOldQuestionsForReplacementSearch == 1)
-                        {
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-                return false;
+                Stackconfigurations oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                return oldq?.UseOldQuestionsForReplacementSearch != null && oldq.UseOldQuestionsForReplacementSearch == 1;
             }
         }
         private bool UseNewQuestions
@@ -55,33 +33,15 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             get
             {
                 var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
-                if (oldq != null)
-                {
-                    if (oldq.UseNewQuestionsForStackBuildUp.HasValue)
-                    {
-                        if (oldq.UseNewQuestionsForStackBuildUp == 1)
-                        {
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-                return true;
+                return oldq?.UseNewQuestionsForStackBuildUp == null || oldq.UseNewQuestionsForStackBuildUp == 1;
             }
         }
         private int MappingType
         {
             get
             {
-                var mapType = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
-                if (mapType != null)
-                {
-                    if (mapType.MappingTypeForStackBuildUp.HasValue)
-                    {
-                        return (int)mapType.MappingTypeForStackBuildUp;
-                    }
-                }
-                return -1;
+                Stackconfigurations mapType = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                return mapType?.MappingTypeForStackBuildUp ?? -1;
             }
         }
         public StackQuestionReplacementController(wwtbamContext context)
@@ -94,31 +54,24 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         {
             //to do vidi dali difficulty ili level?
             //to do categorii? 
-            var stackQuery = from sq in _context.Questionstacks
-                             where sq.StackId == stackQuestionReplacement.StackId
-                             select new Questionstacks
-                             {
-                                 Stack = sq.Stack,
-                                 StackId = sq.StackId,
-                                 Type = sq.Type,
-                                 Timestamp = sq.Timestamp
-                             };
+            var stackQuery = _context.Questionstacks.Where(sq => sq.StackId == stackQuestionReplacement.StackId)
+                .Select(sq =>
+                    new Questionstacks
+                    {
+                        Stack = sq.Stack, StackId = sq.StackId, Type = sq.Type, Timestamp = sq.Timestamp
+                    });
 
-            if (stackQuery.Count() == 0) return NotFound();
+            if (!stackQuery.Any()) return NotFound();
           
             int QuestionType = stackQuery.FirstOrDefault().Type;
 
             int levelFromQId = _context.Questionstackitems.FirstOrDefault(x => x.QuestionId == stackQuestionReplacement.QuestionId && x.StackId == stackQuestionReplacement.StackId).StackLevel;
-            int difficultyFromQ = _context.Qleveldifficultymaping.Where(x => x.Level == levelFromQId && x.Maping == MappingType.ToString()).FirstOrDefault().Difficulty;
+            int difficultyFromQ = _context.Qleveldifficultymaping.FirstOrDefault(x => x.Level == levelFromQId && x.Maping == MappingType.ToString()).Difficulty;
             if (stackQuery.FirstOrDefault().StackType == QuestionTypeDescription.Qualification) { difficultyFromQ = 1; }
 
-            int categoryFromQ = -1;
-            int subcategoryFromQ = -1;
-            var gamequestionfromrequest = _context.Gamequestions.Where(x => x.QuestionId == stackQuestionReplacement.QuestionId).FirstOrDefault();
+            var gamequestionfromrequest = _context.Gamequestions.FirstOrDefault(x => x.QuestionId == stackQuestionReplacement.QuestionId);
             if (gamequestionfromrequest != null)
             {
-                categoryFromQ = gamequestionfromrequest.CategoryId;
-                subcategoryFromQ = gamequestionfromrequest.SubcategoryId;
             }
 
             List<Gamequestions> replacementQuestions = new List<Gamequestions>();
@@ -184,8 +137,10 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
             var categoryQuery = _context.Questioncategories.Where(r => r.CategoryId >= 0);
 
-            StackQuestionReplacementViewModel viewModel = new StackQuestionReplacementViewModel();
-            viewModel.replacementQuestions = foundReplacementQuestions.OrderBy(x => x.QuestionId).OrderBy(x => x.TimesAnswered).ToList();
+            StackQuestionReplacementViewModel viewModel = new StackQuestionReplacementViewModel
+            {
+                replacementQuestions = foundReplacementQuestions.OrderBy(x => x.QuestionId).ThenBy(x => x.TimesAnswered).ToList()
+            };
 
             if (stackQuestionReplacement.SelectedCategoryId > 0)
             {
@@ -213,7 +168,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         public ActionResult Replace(int StackId, int Level, int ReplaceQuestionId)
         {
             var questionstackitem = _context.Questionstackitems.FirstOrDefault(x => x.StackId == StackId && x.StackLevel == Level);
-            questionstackitem.QuestionId = ReplaceQuestionId;
+            if (questionstackitem != null) questionstackitem.QuestionId = ReplaceQuestionId;
             _context.SaveChanges();
 
             return RedirectToAction("Index", "QuestionsPreviewFromStack", new { id = StackId });

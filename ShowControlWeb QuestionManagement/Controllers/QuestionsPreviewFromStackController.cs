@@ -64,19 +64,8 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         {
             get
             {
-                var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
-                if (oldq != null)
-                {
-                    if (oldq.UseOldQuestionsForStackBuildUp.HasValue)
-                    {
-                        if (oldq.UseOldQuestionsForStackBuildUp == 1)
-                        {
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-                return false;
+                Stackconfigurations oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                return oldq?.UseOldQuestionsForStackBuildUp != null && oldq.UseOldQuestionsForStackBuildUp == 1;
             }
         }
         private bool UseNewQuestions
@@ -84,33 +73,15 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             get
             {
                 var oldq = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
-                if (oldq != null)
-                {
-                    if (oldq.UseNewQuestionsForStackBuildUp.HasValue)
-                    {
-                        if (oldq.UseNewQuestionsForStackBuildUp == 1)
-                        {
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-                return true;
+                return oldq?.UseNewQuestionsForStackBuildUp == null || oldq.UseNewQuestionsForStackBuildUp == 1;
             }
         }
         private int MappingType
         {
             get
             {
-                var mapType = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
-                if (mapType != null)
-                {
-                    if (mapType.MappingTypeForStackBuildUp.HasValue)
-                    {
-                        return (int)mapType.MappingTypeForStackBuildUp;
-                    }
-                }
-                return -1;
+                Stackconfigurations mapType = _context.Stackconfigurations.FirstOrDefault(x => x.StackConfigurationId == 1);
+                return mapType?.MappingTypeForStackBuildUp ?? -1;
             }
         }
 
@@ -119,19 +90,15 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         {
             try
             {
-                var stackQuery = from sq in _context.Questionstacks
-                                 where sq.StackId == id
-                                 select new Questionstacks
-                                 {
-                                     Stack = sq.Stack,
-                                     StackId = sq.StackId,
-                                     Type = sq.Type,
-                                     Timestamp = sq.Timestamp
-                                 };
+                var stackQuery = _context.Questionstacks.Where(sq => sq.StackId == id)
+                    .Select(sq => new Questionstacks
+                    {
+                        Stack = sq.Stack, StackId = sq.StackId, Type = sq.Type, Timestamp = sq.Timestamp
+                    });
 
-                if (stackQuery.Count() == 0) return NotFound();
+                if (!stackQuery.Any()) return NotFound();
 
-                Questionstacks questionstack = stackQuery.FirstOrDefault();
+                Questionstacks questionstack = stackQuery.FirstOrDefault() ?? new Questionstacks();
 
                 short totalQuestions = 0;
                 totalQuestions = questionstack.MaximumQuestionNumberPerStack;
@@ -141,7 +108,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 for (int i = 1; i <= totalQuestions; i++)
                 {
                     string MapType = MappingType.ToString();
-                    int difficulty = _context.Qleveldifficultymaping.Where(x => x.Level == i && x.Maping == MapType).FirstOrDefault().Difficulty;
+                    int difficulty = _context.Qleveldifficultymaping.FirstOrDefault(x => x.Level == i && x.Maping == MapType).Difficulty;
                     if (questionstack.StackType == QuestionTypeDescription.Qualification) difficulty = ((i+1) % 2) + 1; //alternate 1-2-1-2
                     
                     long RndQuestionId = -1;
@@ -223,11 +190,6 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                                      Timestamp = sq.Timestamp
                                  };
 
-                if (stackQuery == null)
-                {
-                    return NotFound();
-                }
-
                 //todo vidi sto da napravis so replacement stakovite
                 int CurrentStackType = stackQuery.FirstOrDefault().Type;
                
@@ -236,7 +198,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 _context.Livestacks.Add(new Livestacks { StackId = id, StackType =(short)CurrentStackType, TimeStamp=DateTime.Now});
                 _context.SaveChanges();
 
-                TempData["SuccessMessage"] = $"Stack {stackQuery.FirstOrDefault().Stack} is now LIVE!";
+                TempData["SuccessMessage"] = $"Stack {stackQuery.FirstOrDefault()?.Stack} is now LIVE!";
 
             } catch(Exception e)
             {
@@ -248,7 +210,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
         public ActionResult RemoveStackLive(int id)
         {
-            var livestacks = _context.Livestacks.Where(x => x.StackId == id).FirstOrDefault();
+            var livestacks = _context.Livestacks.FirstOrDefault(x => x.StackId == id);
             if (livestacks != null) _context.Livestacks.Remove(livestacks);
             _context.SaveChanges();
 
@@ -257,7 +219,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
         public ActionResult SetReplacementStack(int id)
         {
-            var livestacks = _context.Livestacks.Where(x => x.StackId == id).FirstOrDefault();
+            var livestacks = _context.Livestacks.FirstOrDefault(x => x.StackId == id);
             if (livestacks != null)
             {
                 _context.Livestacks.Remove(livestacks);
@@ -273,7 +235,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
         public ActionResult RemoveReplacementStack(int id)
         {
-            var livestacks = _context.Livestacks.Where(x => x.StackId == id).FirstOrDefault();
+            var livestacks = _context.Livestacks.FirstOrDefault(x => x.StackId == id);
             if (livestacks != null)
             {
                 _context.Livestacks.Remove(livestacks);
@@ -375,10 +337,12 @@ namespace ShowControlWeb_QuestionManagement.Controllers
 
         public ActionResult FindReplacement(int StackId, int QuestionId, int Level)
         {
-            var sqReplacement = new StackQuestionReplacementViewModel();
-            sqReplacement.QuestionId = QuestionId;
-            sqReplacement.StackId = StackId;
-            sqReplacement.Level = Level;
+            var sqReplacement = new StackQuestionReplacementViewModel
+            {
+                QuestionId = QuestionId,
+                StackId = StackId,
+                Level = Level
+            };
 
             return RedirectToAction("Index", "StackQuestionReplacement", sqReplacement);
         }
@@ -386,7 +350,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
         // GET: QuestionsPreviewFromStack/Delete/5
         public ActionResult RemoveQuestionFromStack(int StackId, int QuestionId)
         {
-            var stackitem = _context.Questionstackitems.Where(x => x.StackId == StackId && x.QuestionId == QuestionId).FirstOrDefault();
+            var stackitem = _context.Questionstackitems.FirstOrDefault(x => x.StackId == StackId && x.QuestionId == QuestionId);
 
             if (stackitem != null)
             {

@@ -6,11 +6,11 @@
 
     var QuestionIdModal = -1;
 
-    var PreviewQuestion = function (QuestionId, Level) {
+    var PreviewQuestion = function (questionId, level) {
 
         document.getElementById("exampleModalLongTitle").innerHTML = "Question <a target='_blank' href='/GameQuestions/Details/"
-            + QuestionId + "'> " + QuestionId + " </a> Level " + Level;
-        $.get("/GameQuestions/DetailsJson/" + QuestionId, function (result) {
+            + questionId + "'> " + questionId + " </a> Level " + level;
+        $.get("/GameQuestions/DetailsJson/" + questionId, function (result) {
             document.getElementById("questiontext").innerHTML = result["question"];
             document.getElementById("answer1text").innerHTML = result["answer1"];
             document.getElementById("answer2text").innerHTML = result["answer2"];
@@ -19,7 +19,7 @@
             document.getElementById("correcttext").innerHTML = result["correctAnswer"];
             document.getElementById("correcttext").innerHTML = result["correctAnswer"];
             document.getElementById("explanationtext").innerHTML = result["moreInformation"];
-            QuestionIdModal = QuestionId;
+            QuestionIdModal = questionId;
 
             $("#exampleModalCenter").modal('show');
         });
