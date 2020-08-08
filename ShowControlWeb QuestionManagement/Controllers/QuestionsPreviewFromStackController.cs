@@ -28,6 +28,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                             Question = m.Question,
                             QuestionId = m.QuestionId,
                             QuestionLevel = (short)st.StackLevel,
+                            LastTimeAnswered = m.LastDateAnswered,
                             TimesAnswered = m.TimesAnswered
                         };
 
@@ -41,12 +42,14 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             var liveStackQuery = _context.Livestacks.Any(x => x.StackId == id);
             var replacementStackQuery = _context.Livestacks.Any(x => x.StackId == id && x.IsReplacement==1);
 
-            StackQuestionPreviewViewModel viewModel = new StackQuestionPreviewViewModel();
-            viewModel.questionsPreviewFromStack = query.OrderByDescending(x=> x.QuestionLevel).ToList();
-            viewModel.stack = stackQuery.FirstOrDefault();           
-            
-            viewModel.IsStackLive = false;
-            viewModel.IsStackReplacement = false;
+            StackQuestionPreviewViewModel viewModel = new StackQuestionPreviewViewModel
+            {
+                questionsPreviewFromStack = query.OrderByDescending(x => x.QuestionLevel).ToList(),
+                stack = stackQuery.FirstOrDefault(),
+                IsStackLive = false,
+                IsStackReplacement = false
+            };
+
             if (liveStackQuery) viewModel.IsStackLive = true;
             if (replacementStackQuery) viewModel.IsStackReplacement = true;
 
@@ -191,11 +194,11 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                                  };
 
                 //todo vidi sto da napravis so replacement stakovite
-                int CurrentStackType = stackQuery.FirstOrDefault().Type;
+                int currentStackType = stackQuery.FirstOrDefault().Type;
                
                 //mozebi vaka e super, koga go stavas live gi trgas site drugi pretodno sto bile live od istiot tip
-                _context.Livestacks.RemoveRange(_context.Livestacks.Where(x => x.StackType == CurrentStackType)); // && x.IsReplacement==0
-                _context.Livestacks.Add(new Livestacks { StackId = id, StackType =(short)CurrentStackType, TimeStamp=DateTime.Now});
+                _context.Livestacks.RemoveRange(_context.Livestacks.Where(x => x.StackType == currentStackType)); // && x.IsReplacement==0
+                _context.Livestacks.Add(new Livestacks { StackId = id, StackType =(short)currentStackType, TimeStamp=DateTime.Now});
                 _context.SaveChanges();
 
                 TempData["SuccessMessage"] = $"Stack {stackQuery.FirstOrDefault()?.Stack} is now LIVE!";

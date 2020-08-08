@@ -13,6 +13,7 @@ namespace ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels
         public int  StackId { get; set; }
         public int QuestionId { get; set; }
         public string Question { get; set; }
+        public DateTime? LastTimeAnswered { get; set; }
         public short TimesAnswered { get; set; }
     }
 

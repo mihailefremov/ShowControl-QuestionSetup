@@ -123,14 +123,17 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                     CategoryId = (short)q.CategoryId,
                     SubcategoryId = (short)q.SubcategoryId,
                     MappedLevel = -1,
+                    LastTimeAnswered = q.LastDateAnswered,
                     TimesAnswered = q.TimesAnswered
                 });
             }
             foreach (ReplacementQuestion q in foundReplacementQuestions)
             {
                 int levelfromr = -1;
-                if (_context.Qleveldifficultymaping.FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2") != null)
-                    levelfromr = _context.Qleveldifficultymaping.FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2").Level;
+                if (_context.Qleveldifficultymaping?.FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2") != null)
+                    levelfromr = _context.Qleveldifficultymaping
+                        .FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2")
+                        .Level;
 
                 q.MappedLevel = (short)levelfromr;
             }
@@ -142,22 +145,20 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 replacementQuestions = foundReplacementQuestions.OrderBy(x => x.QuestionId).ThenBy(x => x.TimesAnswered).ToList()
             };
 
-            if (stackQuestionReplacement.SelectedCategoryId > 0)
+            if (stackQuestionReplacement != null && stackQuestionReplacement.SelectedCategoryId > 0)
             {
-                viewModel.replacementQuestions = viewModel.replacementQuestions
-                    .Where(x => x.CategoryId == stackQuestionReplacement.SelectedCategoryId);
+                viewModel.replacementQuestions = viewModel.replacementQuestions?.Where(x => x.CategoryId == stackQuestionReplacement.SelectedCategoryId);
             }
-            if (stackQuestionReplacement.SelectedSubcategoryId > 0)
+            if (stackQuestionReplacement != null && stackQuestionReplacement.SelectedSubcategoryId > 0)
             {
-                viewModel.replacementQuestions = viewModel.replacementQuestions
-                    .Where(x => x.SubcategoryId == stackQuestionReplacement.SelectedSubcategoryId);
+                viewModel.replacementQuestions = viewModel.replacementQuestions?.Where(x => x.SubcategoryId == stackQuestionReplacement.SelectedSubcategoryId);
             }
 
             viewModel.replacementQuestions = new HashSet<ReplacementQuestion>(viewModel.replacementQuestions).ToList();
 
             viewModel.questionCategories = categoryQuery.ToList();
 
-            ViewBag.StackId = stackQuestionReplacement.StackId;
+            if (stackQuestionReplacement != null) ViewBag.StackId = stackQuestionReplacement.StackId;
             ViewBag.Level = levelFromQId;
 
             ViewData["Title"] = levelFromQId;

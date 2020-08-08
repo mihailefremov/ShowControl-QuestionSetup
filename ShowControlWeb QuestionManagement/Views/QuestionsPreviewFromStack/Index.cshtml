@@ -95,6 +95,9 @@
                         <text>Used</text>
                     </th>
                     <th>
+                        @Html.DisplayNameFor(model => model.questionsPreviewFromStack.FirstOrDefault().LastTimeAnswered)
+                    </th>
+                    <th>
 
                     </th>
                     <th>
@@ -137,6 +140,9 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.TimesAnswered)
+                        </td>
+                        <td> 
+                            @Html.DisplayFor(modelItem => item.LastTimeAnswered)
                         </td>
                         <td>
                             @*<a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
