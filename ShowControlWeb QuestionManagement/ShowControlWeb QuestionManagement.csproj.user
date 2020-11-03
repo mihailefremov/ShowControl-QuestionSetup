@@ -14,5 +14,6 @@
     <WebStackScaffolding_DbContextTypeFullName>ShowControlWeb_QuestionManagement.wwtbamContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsViewGenerationSelected>True</WebStackScaffolding_IsViewGenerationSelected>
     <NameOfLastUsedPublishProfile>FolderProfile</NameOfLastUsedPublishProfile>
+    <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
 </Project>

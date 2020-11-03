@@ -173,6 +173,8 @@ namespace DataUpdaterGameQuestions
                         sw.WriteLine("is Extra");
                         sw.WriteLine("Text");
                     }
+
+                    Console.ReadKey();
                 }
                 catch (Exception e)
                 {
