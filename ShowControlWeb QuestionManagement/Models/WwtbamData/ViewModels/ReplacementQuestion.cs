@@ -107,6 +107,7 @@ namespace ShowControlWeb_QuestionManagement.Models.WwtbamData.ViewModels
                 _SelectedSubcategoryId = value;
             }
         }
-
+        public DateTime? LastTimeAnsweredDateTo { get; set; }
+        public bool UseOldQuestions { get; set; }
     }
 }      

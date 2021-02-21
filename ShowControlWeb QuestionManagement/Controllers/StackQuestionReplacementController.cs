@@ -92,8 +92,9 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 replacementQuestions.AddRange(additionalReplacementQuestions);
             }
 
+            var OldQuestionsInUse = UseOldQuestions || UseOldQuestionsForReplacement;
             //polni gi so pominati ako nema novi
-            if (UseOldQuestions || UseOldQuestionsForReplacement)
+            if (OldQuestionsInUse)
             {
                 //if (replacementQuestions.Count == 0)
                     replacementQuestions.AddRange(_context.GetReplacementQuestions(QuestionType, difficultyFromQ, TimesAnswered: 1).Take(5));
@@ -130,9 +131,9 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             foreach (ReplacementQuestion q in foundReplacementQuestions)
             {
                 int levelfromr = -1;
-                if (_context.Qleveldifficultymaping?.FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2") != null)
+                if (_context.Qleveldifficultymaping?.FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == MappingType.ToString()) != null)
                     levelfromr = _context.Qleveldifficultymaping
-                        .FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == "2")
+                        .FirstOrDefault(x => x.Difficulty == q.Difficulty && x.Maping == MappingType.ToString())
                         .Level;
 
                 q.MappedLevel = (short)levelfromr;
@@ -153,10 +154,16 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             {
                 viewModel.replacementQuestions = viewModel.replacementQuestions?.Where(x => x.SubcategoryId == stackQuestionReplacement.SelectedSubcategoryId);
             }
+            if (stackQuestionReplacement != null && OldQuestionsInUse && stackQuestionReplacement.LastTimeAnsweredDateTo.HasValue)
+            {
+                viewModel.replacementQuestions = viewModel.replacementQuestions?.Where(x => !x.LastTimeAnswered.HasValue || x.LastTimeAnswered <= stackQuestionReplacement.LastTimeAnsweredDateTo.Value);
+            }   
 
             viewModel.replacementQuestions = new HashSet<ReplacementQuestion>(viewModel.replacementQuestions).ToList();
 
             viewModel.questionCategories = categoryQuery.ToList();
+
+            viewModel.UseOldQuestions = OldQuestionsInUse;
 
             if (stackQuestionReplacement != null) ViewBag.StackId = stackQuestionReplacement.StackId;
             ViewBag.Level = levelFromQId;
