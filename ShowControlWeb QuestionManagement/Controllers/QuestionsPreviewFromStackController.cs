@@ -112,6 +112,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                 {
                     string MapType = MappingType.ToString();
                     int difficulty = _context.Qleveldifficultymaping.FirstOrDefault(x => x.Level == i && x.Maping == MapType).Difficulty;
+                    int type = _context.Qleveldifficultymaping.FirstOrDefault(x => x.Level == i && x.Maping == MapType).Type;
                     if (questionstack.StackType == QuestionTypeDescription.Qualification) difficulty = ((i+1) % 2) + 1; //alternate 1-2-1-2
                     
                     long RndQuestionId = -1;
@@ -123,7 +124,7 @@ namespace ShowControlWeb_QuestionManagement.Controllers
                     Gamequestions randomquestion = null;
                     if (UseNewQuestions)
                     {
-                        randomquestion = _context.GetRandomlySelectedQuestion(id, questionstack.Type, difficulty, 0);
+                        randomquestion = _context.GetRandomlySelectedQuestion(id, type, difficulty, 0);
                     }
 
                     if (UseOldQuestions && randomquestion == null)

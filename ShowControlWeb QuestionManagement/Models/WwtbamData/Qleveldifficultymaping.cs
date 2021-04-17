@@ -8,5 +8,6 @@ namespace ShowControlWeb_QuestionManagement
         public string Maping { get; set; }
         public int Level { get; set; }
         public int Difficulty { get; set; }
+        public int Type { get; set; }
     }
 }
