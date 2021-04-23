@@ -53,6 +53,13 @@ namespace ShowControlWeb_QuestionManagement.Controllers
             if (liveStackQuery) viewModel.IsStackLive = true;
             if (replacementStackQuery) viewModel.IsStackReplacement = true;
 
+            foreach(var p in viewModel.questionsPreviewFromStack)
+            {
+                double roundCalculated = p.QuestionLevel / 5.0;
+                p.Round = Convert.ToInt32(Math.Ceiling(roundCalculated));
+                p.IsFlip = p.QuestionLevel > 25 ? true : false;
+            }
+
             return View(viewModel);
         }
 

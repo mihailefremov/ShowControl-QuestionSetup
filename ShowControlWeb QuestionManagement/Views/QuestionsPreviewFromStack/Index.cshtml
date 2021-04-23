@@ -86,6 +86,9 @@
                         <text>Level</text>
                     </th>
                     <th>
+                        <text>R</text>
+                    </th>
+                    <th>
                         <text>ID</text>
                     </th>
                     <th>
@@ -121,48 +124,57 @@
                         rowColor = "#ff8a8a";
                     }
                     string GridLevelQuestionId = $"GridLevelQuestionId" + item.QuestionId;
-                    <tr style="background-color:@rowColor">
-                        <td>
-                            <a asp-action="FindReplacement" asp-controller="QuestionsPreviewFromStack"
-                               asp-route-StackId="@Model.stack.StackId" asp-route-QuestionId="@item.QuestionId"
-                               asp-route-Level="@item.QuestionLevel">
-                                @item.QuestionLevel
-                            </a>
-                        </td>
-                        <td>
-                            @*asp-action="Details" asp-controller="GameQuestions" asp-route-id="@item.QuestionId"*@
-                            <a href="#" id="@GridLevelQuestionId" onclick="PreviewQuestion(@item.QuestionId, @item.QuestionLevel)">
-                                @item.QuestionId
-                            </a>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Question)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TimesAnswered)
-                        </td>
-                        <td> 
-                            @Html.DisplayFor(modelItem => item.LastTimeAnswered)
-                        </td>
-                        <td>
-                            @*<a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |*@
-                            <a asp-action="RemoveQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
-                               asp-route-QuestionId="@item.QuestionId">✕</a>
-                        </td>
-                        <td>
-                            <strong>
-                                <a asp-action="MoveUpQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
-                                   asp-route-QuestionId="@item.QuestionId">&nbsp;&nbsp;↑&nbsp;</a>
-                            </strong>
-                        </td>
-                        <td>
-                            <strong>
-                                <a asp-action="MoveDownQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
-                                   asp-route-QuestionId="@item.QuestionId">&nbsp;↓&nbsp;</a>
-                            </strong>
-                        </td>
-                    </tr>
+                <tr style="background-color:@rowColor">
+                    <td>
+                        <a asp-action="FindReplacement" asp-controller="QuestionsPreviewFromStack"
+                           asp-route-StackId="@Model.stack.StackId" asp-route-QuestionId="@item.QuestionId"
+                           asp-route-Level="@item.QuestionLevel">
+                            @item.QuestionLevel
+                        </a>
+                    </td>
+                    <td>
+                        @{ 
+                            var roundOrFlip = item.Round.ToString();
+                            if (item.Round == 6) {
+                                roundOrFlip = "FL";
+                            }
+                        }
+                        @roundOrFlip
+                    </td>
+                    <td>
+                        @*asp-action="Details" asp-controller="GameQuestions" asp-route-id="@item.QuestionId"*@
+                        <a href="#" id="@GridLevelQuestionId" onclick="PreviewQuestion(@item.QuestionId, @item.QuestionLevel)">
+                            @item.QuestionId
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Question)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TimesAnswered)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastTimeAnswered)
+                    </td>
+                    <td>
+                        @*<a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |*@
+                        <a asp-action="RemoveQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
+                           asp-route-QuestionId="@item.QuestionId">✕</a>
+                    </td>
+                    <td>
+                        <strong>
+                            <a asp-action="MoveUpQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
+                               asp-route-QuestionId="@item.QuestionId">&nbsp;&nbsp;↑&nbsp;</a>
+                        </strong>
+                    </td>
+                    <td>
+                        <strong>
+                            <a asp-action="MoveDownQuestionFromStack" asp-controller="QuestionsPreviewFromStack" asp-route-StackId="@Model.stack.StackId"
+                               asp-route-QuestionId="@item.QuestionId">&nbsp;↓&nbsp;</a>
+                        </strong>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

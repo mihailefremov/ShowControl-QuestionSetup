@@ -199,19 +199,7 @@ namespace ShowControlWeb_QuestionManagement
                     .HasColumnName("AdditionalSubcategoryID")
                     .HasDefaultValueSql("('0')");
 
-                entity.Property(e => e.Answer1)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Answer2)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Answer3)
-                    .IsRequired()
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Answer4)
+                entity.Property(e => e.Answer)
                     .IsRequired()
                     .IsUnicode(false);
 
@@ -238,6 +226,18 @@ namespace ShowControlWeb_QuestionManagement
                     .IsUnicode(false);
 
                 entity.Property(e => e.QuestionCreator)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('John Doe')");
+
+                entity.Property(e => e.QuestionCreatorCity)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('John Doe')");
+
+                entity.Property(e => e.QuestionCreatorPhone)
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false)

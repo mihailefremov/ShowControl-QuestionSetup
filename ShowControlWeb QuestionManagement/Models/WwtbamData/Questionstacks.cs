@@ -34,7 +34,7 @@ namespace ShowControlWeb_QuestionManagement
                 switch (StackType)
                 {
                     case QuestionTypeDescription.Standard:
-                        return 15;
+                        return 28;
                     case QuestionTypeDescription.Qualification:
                         return 10;
                     default:

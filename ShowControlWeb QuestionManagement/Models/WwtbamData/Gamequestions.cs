@@ -11,11 +11,7 @@ namespace ShowControlWeb_QuestionManagement
         public int Difficulty { get; set; }
         public int Type { get; set; }
         public string Question { get; set; }
-        public string Answer1 { get; set; }
-        public string Answer2 { get; set; }
-        public string Answer3 { get; set; }
-        public string Answer4 { get; set; }
-        public short CorrectAnswer { get; set; }
+        public string Answer { get; set; }
         public int CategoryId { get; set; }
         public int SubcategoryId { get; set; }
         public int? AdditionalCategoryId { get; set; }
@@ -23,6 +19,8 @@ namespace ShowControlWeb_QuestionManagement
         public string MoreInformation { get; set; }
         public string Pronunciation { get; set; }
         public string QuestionCreator { get; set; }
+        public string QuestionCreatorCity { get; set; }
+        public string QuestionCreatorPhone { get; set; }
         public DateTime DateOfCreation { get; set; }
         public string Comments { get; set; }
         public short TimesAnswered { get; set; }

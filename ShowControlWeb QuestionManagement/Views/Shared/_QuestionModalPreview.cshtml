@@ -12,12 +12,7 @@
             + questionId + "'> " + questionId + " </a> Level " + level;
         $.get("/GameQuestions/DetailsJson/" + questionId, function (result) {
             document.getElementById("questiontext").innerHTML = result["question"];
-            document.getElementById("answer1text").innerHTML = result["answer1"];
-            document.getElementById("answer2text").innerHTML = result["answer2"];
-            document.getElementById("answer3text").innerHTML = result["answer3"];
-            document.getElementById("answer4text").innerHTML = result["answer4"];
-            document.getElementById("correcttext").innerHTML = result["correctAnswer"];
-            document.getElementById("correcttext").innerHTML = result["correctAnswer"];
+            document.getElementById("answer1text").innerHTML = result["answer"];
             document.getElementById("explanationtext").innerHTML = result["moreInformation"];
             QuestionIdModal = questionId;
 
@@ -62,31 +57,7 @@
                     </dt>
                     <dd>
                         <div id="answer1text"></div>
-                    </dd>
-                    <dt>
-                        Answer2:
-                    </dt>
-                    <dd>
-                        <div id="answer2text"></div>
-                    </dd>
-                    <dt>
-                        Answer3:
-                    </dt>
-                    <dd>
-                        <div id="answer3text"></div>
-                    </dd>
-                    <dt>
-                        Answer4:
-                    </dt>
-                    <dd>
-                        <div id="answer4text"></div>
-                    </dd>
-                    <dt>
-                        Correct:
-                    </dt>
-                    <dd>
-                        <div id="correcttext"></div>
-                    </dd>
+                    </dd>                    
                     <dt>
                         Explanation:
                     </dt>
