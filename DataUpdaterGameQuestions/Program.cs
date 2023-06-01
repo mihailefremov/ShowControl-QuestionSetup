@@ -24,17 +24,14 @@ namespace DataUpdaterGameQuestions
             if (userOptions == "mssqlimport")
             {
                 new MsSqlDataWriterLayer().ImportAllQuestions();
-                return;
             }
             else if (userOptions == "mssqlexport")
             {
                 new MsSqlDataReaderLayer().ExportAllQuestions();
-                return;
             }
             else if (userOptions == "mysqlimport")
             {
                 new MySqlDataWriterLayer().ImportAllQuestions();
-                return;
             }
 
             Console.ReadKey();
